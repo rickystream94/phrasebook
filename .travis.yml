@@ -30,6 +30,7 @@ android:
 
     # The SDK version used to compile your project
     - android-$ANDROID_API
+    - android-$ANDROID_EMULATOR_API
 
     # For Google Maps API v1
     - addon-google_apis-google-$ANDROID_API
