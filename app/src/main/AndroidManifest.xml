@@ -14,10 +14,10 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="40234c5c2eeb0a33f18ee3c90bbf6b7ee7ec18bf"
-            />
+            android:name="android.max_aspect"
+            android:value="2.1" />
 
         <!-- The main/home activity (it has no parent activity) -->
         <activity

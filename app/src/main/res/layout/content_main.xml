@@ -17,11 +17,11 @@
         android:layout_alignParentTop="true"
         android:layout_marginBottom="?actionBarSize"/>
 
-    <android.support.design.widget.BottomNavigationView
+    <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="?android:attr/windowBackground"
-        app:menu="@menu/navigation"/>
+        app:menu="@menu/navigation" />
 </RelativeLayout>
