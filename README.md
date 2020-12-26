@@ -3,13 +3,11 @@
 Download Phrasebook from [Play Store](https://play.google.com/store/apps/details?id=com.bobbytables.phrasebook)!
 Phrasebook was originally developed as part of the final project for the ***Personal Data Interaction for Mobile and Wearables*** course run at Technical University of Denmark, Copenhagen. Original source code of the application along with other course material can still be found in the official [course repository](https://github.com/rickystream94/personal_data_interaction). The current repo has been created to allow further development of the application and continuous integration.
 
-**Current release**: 2.2.4
+**Current release**: 2.2.5
 
 ## Build status
 ### Branch: `master`
 [![Build Status](https://travis-ci.org/rickystream94/phrasebook.svg?branch=master)](https://travis-ci.org/rickystream94/phrasebook)
-### Branch: `develop`
-[![Build Status](https://travis-ci.org/rickystream94/phrasebook.svg?branch=develop)](https://travis-ci.org/rickystream94/phrasebook)
 
 **Future releases features**
 * Notification service

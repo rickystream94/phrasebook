@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by ricky on 01/10/2017.
@@ -57,7 +58,7 @@ public class FileManager {
      * @throws IOException
      */
     public String exportDataToJSON() throws IOException {
-        String currentTimeString = new SimpleDateFormat("yMMddHHmmss").format(new Date());
+        String currentTimeString = new SimpleDateFormat("yMMddHHmmss", Locale.getDefault()).format(new Date());
         JSONObject obj = createJsonDump();
 
         String fileName = String.format(EXPORT_FILENAME_FORMAT, currentTimeString);

@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private List<PhrasebookModel> allPhrasebooks;
     private static final int WRITE_PERMISSION_REQUEST_CODE = 1;
     private static final int READ_PERMISSION_REQUEST_CODE = 2;
-    private static FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
+    private static final FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

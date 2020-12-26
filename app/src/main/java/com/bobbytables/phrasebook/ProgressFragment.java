@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
 
@@ -32,9 +33,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.formatter.IValueFormatter;
-import com.github.mikephil.charting.utils.ViewPortHandler;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,15 +46,11 @@ public class ProgressFragment extends Fragment {
 
     private DatabaseHelper databaseHelper;
     private View rootView;
-    private PieChart challengesPieChart;
-    private PieChart phrasesPieChart;
-    private BarChart activityBarChart;
-    private LineChart ratioLineChart;
     private int lang1Code;
     private int lang2Code;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         databaseHelper = DatabaseHelper.getInstance(getContext());
         SettingsManager settingsManager = SettingsManager.getInstance(getContext());
@@ -81,7 +76,7 @@ public class ProgressFragment extends Fragment {
 
     private void initChallengesRatioChart() {
         //Get chart
-        ratioLineChart = (LineChart) rootView.findViewById(R.id.ratioChart);
+        LineChart ratioLineChart = rootView.findViewById(R.id.ratioChart);
 
         //Retrieve and set entries
         Cursor cursor = databaseHelper.getChallengesRatio(lang1Code, lang2Code);
@@ -111,9 +106,8 @@ public class ProgressFragment extends Fragment {
         ratioLineChart.setData(data);
 
         //Setting XAxis
-        IAxisValueFormatter xAxisFormatter = new DateXAxisValueFormatter(dates);
         XAxis xAxis = ratioLineChart.getXAxis();
-        xAxis.setValueFormatter(xAxisFormatter);
+        xAxis.setValueFormatter(new DateXAxisValueFormatter(dates));
         xAxis.setDrawGridLines(false);
         xAxis.setPosition(XAxis.XAxisPosition.TOP);
         xAxis.setGranularity(1f);
@@ -129,7 +123,7 @@ public class ProgressFragment extends Fragment {
 
     private void initActivityBarChart() {
         //Get bar chart from layout
-        activityBarChart = (BarChart) rootView.findViewById(R.id.activityBarChart);
+        BarChart activityBarChart = (BarChart) rootView.findViewById(R.id.activityBarChart);
 
         //Add entries
         Cursor cursor = databaseHelper.getActivityStats(lang1Code, lang2Code);
@@ -165,14 +159,9 @@ public class ProgressFragment extends Fragment {
         dataSet.setValueTextSize(18f);
         dataSet.setValueTextColor(Color.BLACK);
         dataSet.setColor(ContextCompat.getColor(getContext(), R.color.frequencyChart));
-        dataSet.setValueFormatter(new IValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                return value == 0 ? "" : String.valueOf((int) value);
-            }
-        });
+        dataSet.setValueFormatter(new BarChartValueFormatter());
 
-        IAxisValueFormatter xAxisFormatter = new DateXAxisValueFormatter(allDates);
+        DateXAxisValueFormatter xAxisFormatter = new DateXAxisValueFormatter(allDates);
         XAxis xAxis = activityBarChart.getXAxis();
         xAxis.setValueFormatter(xAxisFormatter);
         xAxis.setDrawGridLines(false);
@@ -195,10 +184,115 @@ public class ProgressFragment extends Fragment {
         activityBarChart.invalidate();
     }
 
+    private void initPhrasesPieChart() {
+        ContentValues values = databaseHelper.getPhrasesStats(lang1Code, lang2Code);
+        int total = values.getAsInteger("total");
+        int archived = values.getAsInteger("archived");
+        int notArchived = total - archived;
+
+        //Get pie chart from layout
+        PieChart phrasesPieChart = rootView.findViewById(R.id.phrasesPieChart);
+
+        //Add entries
+        List<PieEntry> entries = new ArrayList<>();
+        entries.add(new PieEntry(archived, "Learnt"));
+        entries.add(new PieEntry(notArchived, "To Study"));
+        PieDataSet dataSet = new PieDataSet(entries, "Phrases");
+
+        //Styling dataset
+        dataSet.setValueTextSize(18f);
+        ArrayList<Integer> colors = new ArrayList<>();
+        colors.add(0, ContextCompat.getColor(getContext(), R.color.pieChartArchived));
+        colors.add(1, ContextCompat.getColor(getContext(), R.color.pieChartToStudy));
+        dataSet.setColors(colors);
+        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setSliceSpace(3f);
+        dataSet.setValueFormatter(new PieChartValueFormatter());
+
+        //Adding the data to the chart
+        PieData pieData = new PieData(dataSet);
+        phrasesPieChart.setData(pieData);
+
+        setStandardPieChartStyle(phrasesPieChart, "Total Phrases:\n" + total);
+    }
+
+    private void initChallengesPieChart() {
+        ContentValues values = databaseHelper.getChallengesStats(lang1Code, lang2Code);
+        int total = values.getAsInteger("total");
+        int won = values.getAsInteger("won");
+        int lost = total - won;
+
+        //Get pie chart from layout
+        PieChart challengesPieChart = (PieChart) rootView.findViewById(R.id.challengePieChart);
+
+        //Add entries
+        List<PieEntry> entries = new ArrayList<>();
+        entries.add(new PieEntry(won, "Won"));
+        entries.add(new PieEntry(lost, "Lost"));
+        PieDataSet dataSet = new PieDataSet(entries, "Challenges");
+
+        //Styling dataset
+        dataSet.setValueTextSize(18f);
+        ArrayList<Integer> colors = new ArrayList<>();
+        colors.add(0, ContextCompat.getColor(getContext(), R.color.pieChartWon));
+        colors.add(1, ContextCompat.getColor(getContext(), R.color.pieChartLost));
+        dataSet.setColors(colors);
+        dataSet.setValueTextColor(Color.BLACK);
+        dataSet.setSliceSpace(3f);
+        dataSet.setValueFormatter(new PieChartValueFormatter());
+
+        //Adding the data to the chart
+        PieData pieData = new PieData(dataSet);
+        challengesPieChart.setData(pieData);
+
+        setStandardPieChartStyle(challengesPieChart, "Total Challenges:\n" + total);
+    }
+
+    private void setStandardPieChartStyle(PieChart pieChart, String centerText) {
+        //Styling pie chart
+        pieChart.setEntryLabelColor(Color.BLACK);
+        pieChart.setCenterText(centerText);
+        pieChart.setCenterTextSize(18f);
+        Description description = new Description();
+        description.setText("");
+        pieChart.setDescription(description);
+        pieChart.setEntryLabelTextSize(18f);
+        pieChart.setHoleRadius(50);
+        Legend legend = pieChart.getLegend();
+        legend.setTextSize(12f);
+        pieChart.invalidate(); //refresh
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (rootView != null) {
+            initChallengesPieChart();
+            initPhrasesPieChart();
+            initActivityBarChart();
+            initChallengesRatioChart();
+        }
+    }
+
+    private static class PieChartValueFormatter extends ValueFormatter {
+        @Override
+        public String getPieLabel(float value, PieEntry pieEntry) {
+            return ((int) value) + "";
+        }
+    }
+
+    private static class BarChartValueFormatter extends ValueFormatter {
+        @Override
+        public String getBarLabel(BarEntry barEntry) {
+            float value = barEntry.getY();
+            return value == 0 ? "" : String.valueOf((int) value);
+        }
+    }
+
     /**
      * XAxis formatter to display correctly dates on XAxis
      */
-    private static class DateXAxisValueFormatter implements IAxisValueFormatter {
+    private static class DateXAxisValueFormatter extends ValueFormatter {
         private List<String> dates;
         private String[] months = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug",
                 "Sep", "Oct", "Nov", "Dec"};
@@ -208,7 +302,7 @@ public class ProgressFragment extends Fragment {
         }
 
         @Override
-        public String getFormattedValue(float value, AxisBase axis) {
+        public String getAxisLabel(float value, AxisBase axis) {
             int index = (int) value;
             if (dates.size() > index && index >= 0) {
                 String date = dates.get(index);
@@ -264,106 +358,6 @@ public class ProgressFragment extends Fragment {
                     month = "";
             }
             return day + " " + month + " " + year;
-        }
-    }
-
-    private void initPhrasesPieChart() {
-        ContentValues values = databaseHelper.getPhrasesStats(lang1Code, lang2Code);
-        int total = values.getAsInteger("total");
-        int archived = values.getAsInteger("archived");
-        int notArchived = total - archived;
-
-        //Get pie chart from layout
-        phrasesPieChart = (PieChart) rootView.findViewById(R.id.phrasesPieChart);
-
-        //Add entries
-        List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(archived, "Learnt"));
-        entries.add(new PieEntry(notArchived, "To Study"));
-        PieDataSet dataSet = new PieDataSet(entries, "Phrases");
-
-        //Styling dataset
-        dataSet.setValueTextSize(18f);
-        ArrayList<Integer> colors = new ArrayList<>();
-        colors.add(0, ContextCompat.getColor(getContext(), R.color.pieChartArchived));
-        colors.add(1, ContextCompat.getColor(getContext(), R.color.pieChartToStudy));
-        dataSet.setColors(colors);
-        dataSet.setValueTextColor(Color.BLACK);
-        dataSet.setSliceSpace(3f);
-        dataSet.setValueFormatter(new IValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                return ((int) value) + "";
-            }
-        });
-
-        //Adding the data to the chart
-        PieData pieData = new PieData(dataSet);
-        phrasesPieChart.setData(pieData);
-
-        setStandardPieChartStyle(phrasesPieChart, "Total Phrases:\n" + total);
-    }
-
-    private void initChallengesPieChart() {
-        ContentValues values = databaseHelper.getChallengesStats(lang1Code, lang2Code);
-        int total = values.getAsInteger("total");
-        int won = values.getAsInteger("won");
-        int lost = total - won;
-
-        //Get pie chart from layout
-        challengesPieChart = (PieChart) rootView.findViewById(R.id.challengePieChart);
-
-        //Add entries
-        List<PieEntry> entries = new ArrayList<>();
-        entries.add(new PieEntry(won, "Won"));
-        entries.add(new PieEntry(lost, "Lost"));
-        PieDataSet dataSet = new PieDataSet(entries, "Challenges");
-
-        //Styling dataset
-        dataSet.setValueTextSize(18f);
-        ArrayList<Integer> colors = new ArrayList<>();
-        colors.add(0, ContextCompat.getColor(getContext(), R.color.pieChartWon));
-        colors.add(1, ContextCompat.getColor(getContext(), R.color.pieChartLost));
-        dataSet.setColors(colors);
-        dataSet.setValueTextColor(Color.BLACK);
-        dataSet.setSliceSpace(3f);
-        dataSet.setValueFormatter(new IValueFormatter() {
-            @Override
-            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
-                return ((int) value) + "";
-            }
-        });
-
-        //Adding the data to the chart
-        PieData pieData = new PieData(dataSet);
-        challengesPieChart.setData(pieData);
-
-        setStandardPieChartStyle(challengesPieChart, "Total Challenges:\n" + total);
-    }
-
-    private void setStandardPieChartStyle(PieChart pieChart, String centerText) {
-        //Styling pie chart
-        pieChart.setEntryLabelColor(Color.BLACK);
-        pieChart.setCenterText(centerText);
-        pieChart.setCenterTextSize(18f);
-        Description description = new Description();
-        description.setText("");
-        pieChart.setDescription(description);
-        pieChart.setEntryLabelTextSize(18f);
-        pieChart.setHoleRadius(50);
-        Legend legend = pieChart.getLegend();
-        legend.setTextSize(12f);
-        pieChart.invalidate(); //refresh
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (rootView != null) {
-            initChallengesPieChart();
-            initPhrasesPieChart();
-            initActivityBarChart();
-            initChallengesRatioChart();
         }
     }
 }
