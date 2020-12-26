@@ -22,10 +22,9 @@ import com.bobbytables.phrasebook.database.DatabaseHelper;
 import com.bobbytables.phrasebook.utils.AlertDialogManager;
 import com.bobbytables.phrasebook.utils.DateUtil;
 import com.bobbytables.phrasebook.utils.SettingsManager;
-import com.hanks.htextview.HTextView;
-import com.hanks.htextview.HTextViewType;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by ricky on 16/03/2017.
@@ -55,24 +54,24 @@ class ChallengeCardsAdapter extends RecyclerView.Adapter<ChallengeCardsAdapter.V
         TextView lang2ValueTextView;
         TextView lang1PhraseTextView;
         TextView correctTranslation;
-        HTextView newLevelText;
+        TextView newLevelText;
         EditText translation;
         CardView cardView;
         Button checkButton;
         Button nextChallenge;
-        HTextView xpText;
+        TextView xpText;
 
         ViewHolder(View itemView) {
             super(itemView);
-            lang2ValueTextView = (TextView) itemView.findViewById(R.id.challenge_card_lang2_name);
-            lang1PhraseTextView = (TextView) itemView.findViewById(R.id.challenge_card_lang1_phrase);
-            translation = (EditText) itemView.findViewById(R.id.translation);
-            correctTranslation = (TextView) itemView.findViewById(R.id.correctTranslation);
-            newLevelText = (HTextView) itemView.findViewById(R.id.newLevel);
-            cardView = (CardView) itemView.findViewById(R.id.challengeCardView);
-            checkButton = (Button) itemView.findViewById(R.id.checkTranslation);
-            nextChallenge = (Button) itemView.findViewById(R.id.nextChallenge);
-            xpText = (HTextView) itemView.findViewById(R.id.xpText);
+            lang2ValueTextView = itemView.findViewById(R.id.challenge_card_lang2_name);
+            lang1PhraseTextView = itemView.findViewById(R.id.challenge_card_lang1_phrase);
+            translation = itemView.findViewById(R.id.translation);
+            correctTranslation = itemView.findViewById(R.id.correctTranslation);
+            newLevelText = itemView.findViewById(R.id.newLevel);
+            cardView = itemView.findViewById(R.id.challengeCardView);
+            checkButton = itemView.findViewById(R.id.checkTranslation);
+            nextChallenge = itemView.findViewById(R.id.nextChallenge);
+            xpText = itemView.findViewById(R.id.xpText);
         }
     }
 
@@ -189,14 +188,13 @@ class ChallengeCardsAdapter extends RecyclerView.Adapter<ChallengeCardsAdapter.V
             if (xpManager.checkLevelUp()) {
                 int newLevel = xpManager.levelUp();
                 holder.newLevelText.setVisibility(View.VISIBLE);
-                holder.newLevelText.setAnimateType(HTextViewType.SCALE);
-                holder.newLevelText.animateText("Level " + newLevel + " reached!");
+                holder.newLevelText.setText(String.format(Locale.getDefault(), "Level %d reached!"
+                        , newLevel));
                 xpManager.addExperience(XPManager.XP_BONUS_LEVEL_UP);
                 xp += XPManager.XP_BONUS_LEVEL_UP;
             }
             holder.xpText.setVisibility(View.VISIBLE);
-            holder.xpText.setAnimateType(HTextViewType.ANVIL);
-            holder.xpText.animateText("+" + xp + "XP!");
+            holder.xpText.setText(String.format(Locale.getDefault(), "+%dXP!", xp));
             Log.d("XP DEBUG", "Added XP points, new XP: " + xpManager.getCurrentXp());
         }
 

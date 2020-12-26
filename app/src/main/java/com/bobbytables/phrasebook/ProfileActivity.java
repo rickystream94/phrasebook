@@ -25,7 +25,6 @@ import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.bobbytables.phrasebook.database.DatabaseHelper;
 import com.bobbytables.phrasebook.utils.AlertDialogManager;
 import com.bobbytables.phrasebook.utils.SettingsManager;
-import com.hanks.htextview.HTextView;
 
 import java.io.File;
 
@@ -51,8 +50,8 @@ public class ProfileActivity extends AppCompatActivity implements AdapterView.On
         databaseHelper = DatabaseHelper.getInstance(getApplicationContext());
 
         //Set nickname text
-        HTextView nicknameText = (HTextView) findViewById(R.id.nicknameText);
-        nicknameText.animateText(settingsManager.getPrefStringValue(SettingsManager.KEY_NICKNAME));
+        TextView nicknameText = findViewById(R.id.nicknameText);
+        nicknameText.setText(settingsManager.getPrefStringValue(SettingsManager.KEY_NICKNAME));
 
         //Set language text
         TextView myLanguage = (TextView) findViewById(R.id.myLanguage);
