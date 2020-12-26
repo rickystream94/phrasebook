@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:htext="http://schemas.android.com/apk/res-auto"
     android:id="@+id/challengeCardView"
@@ -113,6 +112,6 @@
             android:layout_alignParentEnd="true"
             android:drawableEnd="@drawable/ic_arrow_forward_white_24dp"
             android:text="@string/next_challenge"
-            android:visibility="invisible"/>
+            android:visibility="invisible" />
     </RelativeLayout>
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

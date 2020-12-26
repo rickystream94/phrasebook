@@ -5,9 +5,9 @@
     android:layout_height="match_parent"
     tools:context="com.bobbytables.phrasebook.MainActivity">
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cardsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none"/>
+        android:scrollbars="none" />
 </FrameLayout>

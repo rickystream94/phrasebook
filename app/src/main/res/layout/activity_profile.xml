@@ -18,7 +18,7 @@
         android:paddingRight="5dp"
         android:paddingTop="5dp">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
@@ -72,12 +72,12 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:textSize="16sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
                 </LinearLayout>
             </RelativeLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
@@ -170,12 +170,12 @@
                         android:layout_toStartOf="@id/levelsBar"
                         android:contentDescription="@string/experience_points"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/level"/>
+                        android:src="@drawable/level" />
                 </RelativeLayout>
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dp"
@@ -192,16 +192,16 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:text="Your Badges:"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp" />
 
                 <com.bobbytables.phrasebook.ExpandableHeightGridView
                     android:id="@+id/badgesGridView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:numColumns="3"/>
+                    android:numColumns="3" />
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
     </LinearLayout>
 </ScrollView>

@@ -11,17 +11,21 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,9 +42,7 @@ import com.bobbytables.phrasebook.utils.AlertDialogManager;
 import com.bobbytables.phrasebook.utils.FileManager;
 import com.bobbytables.phrasebook.utils.SettingsManager;
 import com.github.clans.fab.FloatingActionMenu;
-import com.crashlytics.android.Crashlytics;
-
-import io.fabric.sdk.android.Fabric;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -58,19 +60,21 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     private List<PhrasebookModel> allPhrasebooks;
     private static final int WRITE_PERMISSION_REQUEST_CODE = 1;
     private static final int READ_PERMISSION_REQUEST_CODE = 2;
+    private static FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
 
         //Get helper classes
         databaseHelper = DatabaseHelper.getInstance(getApplicationContext());
-        Crashlytics.setInt("Database Version", databaseHelper.getDatabaseVersion());
+        crashlytics.setCustomKey("Database Version",
+                databaseHelper.getDatabaseVersion());
         settingsManager = SettingsManager.getInstance(getApplicationContext());
-        Crashlytics.setString(SettingsManager.KEY_NICKNAME, settingsManager.getPrefStringValue
-                (SettingsManager.KEY_NICKNAME));
+        crashlytics.setCustomKey(SettingsManager.KEY_NICKNAME,
+                settingsManager.getPrefStringValue
+                        (SettingsManager.KEY_NICKNAME));
 
         //Check always if it's the first time
         //Will invoke automatically NewUserActivity

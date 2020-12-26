@@ -7,17 +7,17 @@ before_cache:
 
 cache:
   directories:
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-    - $HOME/.android/build-cache
+    - "$HOME/.gradle/caches/"
+    - "$HOME/.gradle/wrapper/"
+    - "$HOME/.android/build-cache"
 
 env:
- global:
-  # Change this values when updated
- - ANDROID_API=26
- - ANDROID_EMULATOR_API=22
- - ANDROID_BUILD_TOOLS=26.0.2
- - ANDROID_ABI=armeabi-v7a
+  global:
+    # Change this values when updated
+    - ANDROID_API=29
+    - ANDROID_EMULATOR_API=22
+    - ANDROID_BUILD_TOOLS=29.0.0
+    - ANDROID_ABI=armeabi-v7a
 
 android:
   components:
@@ -27,24 +27,24 @@ android:
   
     # The BuildTools version used by your project
     - build-tools-$ANDROID_BUILD_TOOLS
-
+    
     # The SDK version used to compile your project
     - android-$ANDROID_API
     - android-$ANDROID_EMULATOR_API
-
+    
     # For Google Maps API v1
     - addon-google_apis-google-$ANDROID_API
-
+    
     # Google Play Services
     - extra-google-google_play_services
-
+    
     # Support library
     - extra-android-support
-
+    
     # Latest artifacts in local repository
     - extra-google-m2repository
     - extra-android-m2repository
-
+  
     # Specify at least one system image,
     # if you need to run emulator(s) during your tests
     - sys-img-armeabi-v7a-android-$ANDROID_API
@@ -55,3 +55,7 @@ before_script:
   - emulator -avd test -no-skin -no-audio -no-window &
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
+
+before_install:
+  - yes | sdkmanager "platforms;android-29"
+  - openssl aes-256-cbc -K $encrypted_fd8d34b142d0_key -iv $encrypted_fd8d34b142d0_iv -in google-services.json.enc -out app/google-services.json -d

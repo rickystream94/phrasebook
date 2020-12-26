@@ -1,15 +1,15 @@
 package com.bobbytables.phrasebook.utils;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
 
-import com.bobbytables.phrasebook.MainActivity;
 import com.bobbytables.phrasebook.NewUserActivity;
 import com.bobbytables.phrasebook.database.DatabaseHelper;
 
