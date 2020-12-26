@@ -70,7 +70,7 @@
             android:textSize="24sp"
             android:visibility="invisible"/>
 
-        <com.hanks.htextview.HTextView
+        <TextView
             android:id="@+id/newLevel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
             android:textColor="@color/colorAccent"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:visibility="invisible"/>
+            android:visibility="invisible" />
 
         <Button
             android:id="@+id/checkTranslation"
@@ -92,7 +92,7 @@
             android:drawableEnd="@drawable/ic_done_white_24dp"
             android:text="@string/check"/>
 
-        <com.hanks.htextview.HTextView
+        <TextView
             android:id="@+id/xpText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -101,7 +101,7 @@
             android:textColor="@color/colorPrimaryDark"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:visibility="invisible"/>
+            android:visibility="invisible" />
 
         <Button
             android:id="@+id/nextChallenge"
