@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31701.349
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhrasebookBackendService", "PhrasebookBackendService\PhrasebookBackendService.csproj", "{667511D8-132A-45E9-A885-CB5B418F091B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Phrasebook.Data", "Phrasebook.Data\Phrasebook.Data.csproj", "{576362F9-606A-4B13-A16C-36641F37CB28}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{667511D8-132A-45E9-A885-CB5B418F091B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{667511D8-132A-45E9-A885-CB5B418F091B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{667511D8-132A-45E9-A885-CB5B418F091B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{667511D8-132A-45E9-A885-CB5B418F091B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{576362F9-606A-4B13-A16C-36641F37CB28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{576362F9-606A-4B13-A16C-36641F37CB28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{576362F9-606A-4B13-A16C-36641F37CB28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{576362F9-606A-4B13-A16C-36641F37CB28}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {223CE15D-E1EC-4C72-B46B-F508032D28E7}
+	EndGlobalSection
+EndGlobal
