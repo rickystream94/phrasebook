@@ -93,7 +93,8 @@
                     "[concat('Microsoft.Web/Sites/', parameters('resourceName'))]"
                   ],
                   "properties": {
-                    "WEBSITE_WEBDEPLOY_USE_SCM": "false"
+                    "WEBSITE_WEBDEPLOY_USE_SCM": "false",
+                    "ASPNETCORE_ENVIRONMENT": "Production"
                   }
                 }
               ]
