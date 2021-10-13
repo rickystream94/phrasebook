@@ -8,9 +8,7 @@
 
         public const string Development = "Development";
 
-        public const string LocalDb = "LocalDb";
-
-        public const string AzureAad = "AzureAad";
+        public const string DatabaseConnectionStringName = "Database";
 
         public const string AppSettingsJson = "appsettings.json";
 
