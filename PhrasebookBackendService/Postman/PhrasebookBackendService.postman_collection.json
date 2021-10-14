@@ -180,5 +180,93 @@
 				}
 			]
 		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "clientId",
+				"value": "{{ClientAadAppId}}",
+				"type": "string"
+			},
+			{
+				"key": "useBrowser",
+				"value": false,
+				"type": "boolean"
+			},
+			{
+				"key": "authUrl",
+				"value": "{{AadLoginEndpoint}}/{{TenantId}}/oauth2/authorize?resource={{ApiResource}}",
+				"type": "string"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "{{AadLoginEndpoint}}/{{TenantId}}/oauth2/token",
+				"type": "string"
+			},
+			{
+				"key": "clientSecret",
+				"value": "",
+				"type": "string"
+			},
+			{
+				"key": "redirect_uri",
+				"value": "https://phrasebookbackendservice.azurewebsites.net/.auth/login/aad/callback",
+				"type": "string"
+			},
+			{
+				"key": "grant_type",
+				"value": "authorization_code",
+				"type": "string"
+			},
+			{
+				"key": "tokenName",
+				"value": "JWT API Token",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "TenantId",
+			"value": "3482ae78-3e1a-4c24-ad03-97b471015836"
+		},
+		{
+			"key": "ClientAadAppId",
+			"value": "7235b1ed-0b27-4501-a1b9-c1ee14a746af"
+		},
+		{
+			"key": "AadLoginEndpoint",
+			"value": "https://login.microsoftonline.com"
+		},
+		{
+			"key": "ApiResource",
+			"value": "api://0bc190f1-8c82-424a-b8dc-f318e0c35cd0"
+		}
 	]
 }
