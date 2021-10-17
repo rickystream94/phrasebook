@@ -11,6 +11,8 @@ namespace Phrasebook.Data.Dto.Models
 
         public string DisplayName { get; set; }
 
+        public string FullName { get; set; }
+
         public DateTime SignedUpOn { get; set; }
     }
 }

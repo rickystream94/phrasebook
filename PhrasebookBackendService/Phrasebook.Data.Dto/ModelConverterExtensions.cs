@@ -40,7 +40,6 @@ namespace Phrasebook.Data.Dto
                 CreatedOn = book.CreatedOn,
                 FirstLanguageDisplayName = book.FirstLanguage.DisplayName,
                 ForeignLanguageDisplayName = book.ForeignLanguage.DisplayName,
-                UserEmail = book.User.Email,
                 Phrases = book.Phrases != null ? new ReadOnlyCollection<Phrase>(book.Phrases.Select(p => p.ToPhraseDto()).ToList()) : null
             };
         }
@@ -51,6 +50,7 @@ namespace Phrasebook.Data.Dto
             {
                 Email = user.Email,
                 DisplayName = user.DisplayName,
+                FullName = user.FullName,
                 SignedUpOn = user.SignedUpOn,
                 Id = user.Id
             };

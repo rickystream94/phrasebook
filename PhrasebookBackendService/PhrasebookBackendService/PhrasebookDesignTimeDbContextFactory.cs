@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Phrasebook.Common;
 using Phrasebook.Data;
+using System;
 
 namespace PhrasebookBackendService
 {
@@ -13,8 +14,14 @@ namespace PhrasebookBackendService
     {
         public PhrasebookDbContext CreateDbContext(string[] args)
         {
+            string environment = Environment.GetEnvironmentVariable(Constants.AspNetCoreEnvironmentVariableName);
+            if (string.IsNullOrWhiteSpace(environment))
+            {
+                throw new ArgumentNullException(nameof(environment));
+            }
+
             var configuration = new ConfigurationBuilder()
-                .AddJsonFile(Constants.AppSettingsJson)
+                .AddJsonFile(Constants.GetConfigurationFile(environment))
                 .Build();
 
             var optionsBuilder = new DbContextOptionsBuilder<PhrasebookDbContext>();

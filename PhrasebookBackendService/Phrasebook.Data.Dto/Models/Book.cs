@@ -14,8 +14,6 @@ namespace Phrasebook.Data.Dto.Models
 
         public string ForeignLanguageDisplayName { get; set; }
 
-        public string UserEmail { get; set; }
-
         public IReadOnlyCollection<Phrase> Phrases { get; set; }
     }
 }

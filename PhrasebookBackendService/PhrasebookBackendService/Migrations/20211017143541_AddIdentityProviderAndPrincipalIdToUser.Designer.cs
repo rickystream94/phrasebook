@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Phrasebook.Data;
 
 namespace PhrasebookBackendService.Migrations
 {
     [DbContext(typeof(PhrasebookDbContext))]
-    partial class PhrasebookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211017143541_AddIdentityProviderAndPrincipalIdToUser")]
+    partial class AddIdentityProviderAndPrincipalIdToUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

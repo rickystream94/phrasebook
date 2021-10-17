@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Phrasebook.Common;
 using Phrasebook.Data;
 using Phrasebook.Data.Development;
+using PhrasebookBackendService.Web;
 
 namespace PhrasebookBackendService
 {

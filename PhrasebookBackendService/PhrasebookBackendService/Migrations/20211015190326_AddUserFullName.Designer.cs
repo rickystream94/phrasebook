@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Phrasebook.Data;
 
 namespace PhrasebookBackendService.Migrations
 {
     [DbContext(typeof(PhrasebookDbContext))]
-    partial class PhrasebookDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211015190326_AddUserFullName")]
+    partial class AddUserFullName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,23 +135,10 @@ namespace PhrasebookBackendService.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("IdentityProvider")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.Property<Guid>("PrincipalId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("SignedUpOn")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("PrincipalId")
-                        .IsUnique();
 
                     b.ToTable("Users");
                 });

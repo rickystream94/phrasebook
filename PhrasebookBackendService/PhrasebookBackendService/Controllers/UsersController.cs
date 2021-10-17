@@ -1,20 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Phrasebook.Common;
 using Phrasebook.Data;
 using Phrasebook.Data.Dto;
-using Phrasebook.Data.Dto.Models;
+using Phrasebook.Data.Validation;
 
 namespace PhrasebookBackendService.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(Policy = Constants.UserIsSignedUpPolicy)]
     [ApiController]
     public class UsersController : BaseController
     {
@@ -26,59 +24,34 @@ namespace PhrasebookBackendService.Controllers
         public UsersController(
             ILogger<UsersController> logger,
             PhrasebookDbContext context,
+            IValidatorFactory validatorFactory,
             ITimeProvider timeProvider)
-            : base(logger, context, timeProvider)
+            : base(logger, context, timeProvider, validatorFactory)
         {
         }
 
-        // GET: api/Users
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsersAsync()
+        [HttpGet("me")]
+        [ActionName("GetAuthenticatedUserInformationAsync")]
+        public async Task<IActionResult> GetAuthenticatedUserInformationAsync()
         {
-            IEnumerable<Phrasebook.Data.Models.User> users = await this.DbContext
-                .GetEntitiesAsync<Phrasebook.Data.Models.User>(navigationPropertiesToInclude: this.properties);
-            this.Logger.LogInformation($"Retrieved {users.Count()} users.");
-            return this.Ok(users
-                .Select(u => u.ToUserDto())
-                .ToListResult());
-        }
-
-        // GET: api/Users/5
-        [HttpGet("{id}")]
-        [ActionName("GetUserAsync")]
-        public async Task<ActionResult<User>> GetUserAsync([FromRoute] int id)
-        {
-            var user = await this.DbContext.GetEntityByIdAsync(id, navigationPropertiesToInclude: this.properties);
-
-            if (user == null)
-            {
-                return this.NotFound();
-            }
-
+            Phrasebook.Data.Models.User user = await this.DbContext.GetEntityAsync<Phrasebook.Data.Models.User>(u => u.PrincipalId == this.AuthenticatedUser.PrincipalId);
             return this.Ok(user.ToUserDto());
         }
 
         // PUT: api/Users/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutUserAsync([FromRoute] int id, [FromBody] User user)
+        [HttpPut]
+        public async Task<IActionResult> UpdateUserAsync([FromBody] string newDisplayName)
         {
-            Phrasebook.Data.Models.User userToUpdate = await this.DbContext.GetEntityByIdAsync<Phrasebook.Data.Models.User>(id);
-            if (userToUpdate == null)
+            IUserValidator validator = this.ValidatorFactory.CreateUserValidator();
+            if (!validator.IsValidDisplayName(newDisplayName))
             {
-                return this.NotFound($"User with ID {id} was not found.");
+                return this.BadRequest($"Provided display name '{newDisplayName}' is not valid.");
             }
 
-            // Only allow modifications to the nickname and email
-            if (!string.IsNullOrWhiteSpace(user.DisplayName))
-            {
-                userToUpdate.DisplayName = user.DisplayName;
-            }
-            if (!string.IsNullOrWhiteSpace(user.Email))
-            {
-                userToUpdate.Email = user.Email;
-            }
+            Phrasebook.Data.Models.User userToUpdate = await this.DbContext.GetEntityAsync<Phrasebook.Data.Models.User>(u => u.PrincipalId == this.AuthenticatedUser.PrincipalId);
+            userToUpdate.DisplayName = newDisplayName;
             await this.DbContext.SaveChangesAsync();
             this.Logger.LogInformation($"Updated user with ID {userToUpdate.Id}");
 
@@ -88,42 +61,39 @@ namespace PhrasebookBackendService.Controllers
         // POST: api/Users
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<User>> PostUserAsync([FromBody] User user)
+        public async Task<IActionResult> SignupUserAsync([FromBody] string displayName)
         {
-            if (user == null)
+            Guid principalId = this.AuthenticatedUser.PrincipalId;
+            IUserValidator validator = this.ValidatorFactory.CreateUserValidator();
+            if (await validator.HasUserSignedUpAsync(principalId))
             {
-                return this.BadRequest("User information not provided in the body.");
+                return this.BadRequest($"User with principal ID '{principalId}' is already signed up.");
             }
 
-            if ((await this.DbContext.GetEntityAsync<Phrasebook.Data.Models.User>(u => u.Email.ToLower() == user.Email.ToLower())) != null)
-            {
-                return this.BadRequest($"User with email {user.Email} already exists.");
-            }
-
+            // Create new user entity
             Phrasebook.Data.Models.User newUser = new Phrasebook.Data.Models.User
             {
-                Email = user.Email,
-                DisplayName = user.DisplayName,
+                IdentityProvider = this.AuthenticatedUser.IdentityProvider,
+                PrincipalId = principalId,
+                Email = this.AuthenticatedUser.Email,
+                DisplayName = displayName,
+                FullName = this.AuthenticatedUser.FullName,
                 SignedUpOn = this.TimeProvider.Now,
             };
             this.DbContext.Users.Add(newUser);
             await DbContext.SaveChangesAsync();
             this.Logger.LogInformation($"Created new user with ID {newUser.Id}");
 
-            return this.CreatedAtAction(nameof(GetUserAsync), new { id = newUser.Id }, newUser.ToUserDto());
+            return this.CreatedAtAction(nameof(GetAuthenticatedUserInformationAsync), newUser.ToUserDto());
         }
 
         // DELETE: api/Users/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUserAsync([FromRoute] int id)
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUserAsync()
         {
-            var user = await this.DbContext.GetEntityByIdAsync<Phrasebook.Data.Models.User>(id);
-            if (user == null)
-            {
-                return this.NotFound();
-            }
-
+            var user = await this.DbContext.GetEntityAsync<Phrasebook.Data.Models.User>(u => u.PrincipalId == this.AuthenticatedUser.PrincipalId);
             this.DbContext.Users.Remove(user);
             await this.DbContext.SaveChangesAsync();
             this.Logger.LogInformation($"Deleted user with ID {user.Id}");

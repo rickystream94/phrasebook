@@ -1,12 +1,16 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using Phrasebook.Common;
 using Phrasebook.Data;
+using Phrasebook.Data.Validation;
+using PhrasebookBackendService.Authorization;
 
-namespace PhrasebookBackendService
+namespace PhrasebookBackendService.Web
 {
     public class Startup
     {
@@ -30,7 +34,23 @@ namespace PhrasebookBackendService
                 options.SetSqlConnectionString(this.Configuration, x => x.MigrationsAssembly(Constants.MigrationsAssembly));
             });
 
-            services.AddControllers();
+            services.AddScoped<IValidatorFactory, ValidatorFactory>();
+            services.AddScoped<IAuthorizationHandler, SignupHandler>();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultForbidScheme = Constants.AuthenticationSchemeName;
+                options.AddScheme<SignupAuthenticationHandler>(Constants.AuthenticationSchemeName, Constants.AuthenticationSchemeName);
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Constants.UserIsSignedUpPolicy, policy => policy.AddRequirements(new SignupRequirement()));
+            });
+
+            services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,10 +60,19 @@ namespace PhrasebookBackendService
             {
                 app.UseDeveloperExceptionPage();
             }
+            else
+            {
+                // TODO: set exception handling middleware
+            }
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
+
+            // Any custom middleware must be setup before UseEndpoints()
+            app.UseEasyAuthUserValidation();
 
             app.UseAuthorization();
 

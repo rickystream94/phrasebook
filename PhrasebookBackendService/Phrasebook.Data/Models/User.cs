@@ -13,6 +13,14 @@ namespace Phrasebook.Data.Models
         [StringLength(50)]
         public string DisplayName { get; set; }
 
+        [StringLength(100)]
+        public string FullName { get; set; }
+
+        [StringLength(10)]
+        public string IdentityProvider { get; set; }
+
+        public Guid PrincipalId { get; set; }
+
         public DateTime SignedUpOn { get; set; }
 
         public ICollection<Book> Phrasebooks { get; set; }

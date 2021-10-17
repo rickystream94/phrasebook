@@ -23,12 +23,20 @@ namespace Phrasebook.Data
                 .HasOne(l => l.FirstLanguage)
                 .WithMany()
                 .OnDelete(DeleteBehavior.ClientSetNull);
-
             modelBuilder
                 .Entity<Book>()
                 .HasOne(l => l.ForeignLanguage)
                 .WithMany()
                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            modelBuilder
+                .Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+            modelBuilder
+                .Entity<User>()
+                .HasIndex(u => u.PrincipalId)
+                .IsUnique();
 
             var splitStringConverter = new ValueConverter<IEnumerable<string>, string>(
                 list => string.Join(';', list),

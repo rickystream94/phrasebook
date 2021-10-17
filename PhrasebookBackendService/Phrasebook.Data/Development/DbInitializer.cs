@@ -41,6 +41,11 @@ namespace Phrasebook.Data.Development
                     DisplayName = "French",
                     Code = "fr"
                 },
+                new Language
+                {
+                    DisplayName = "German",
+                    Code = "de"
+                },
             };
             context.AddRange(languages);
             context.SaveChanges();
@@ -51,19 +56,28 @@ namespace Phrasebook.Data.Development
                 new User
                 {
                     Email = "test1@test.com",
-                    DisplayName = "John Doe",
+                    FullName = "John Doe",
+                    DisplayName = "Johnny",
+                    IdentityProvider = "aad",
+                    PrincipalId = Guid.NewGuid(),
                     SignedUpOn = timeProvider.Now - TimeSpan.FromDays(100),
                 },
                 new User
                 {
                     Email = "test2@test.com",
-                    DisplayName = "Agata Christie",
+                    FullName = "Agata Christie",
+                    DisplayName = "Aga",
+                    IdentityProvider = "google",
+                    PrincipalId = Guid.NewGuid(),
                     SignedUpOn = timeProvider.Now - TimeSpan.FromDays(200),
                 },
                 new User
                 {
                     Email = "test3@test.com",
-                    DisplayName = "Ken Ferry",
+                    FullName = "Ken Ferry",
+                    DisplayName = "Ken",
+                    IdentityProvider = "facebook",
+                    PrincipalId = Guid.NewGuid(),
                     SignedUpOn = timeProvider.Now - TimeSpan.FromDays(300),
                 }
             };
