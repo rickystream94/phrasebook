@@ -18,10 +18,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ModelExtensions\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Phrasebook.Common\Phrasebook.Common.csproj" />
   </ItemGroup>
 

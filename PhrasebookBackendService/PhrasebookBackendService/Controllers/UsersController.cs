@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Phrasebook.Common;
-using Phrasebook.Data;
 using Phrasebook.Data.Dto;
+using Phrasebook.Data.Sql;
 using Phrasebook.Data.Validation;
 
 namespace PhrasebookBackendService.Controllers
@@ -23,10 +23,10 @@ namespace PhrasebookBackendService.Controllers
 
         public UsersController(
             ILogger<UsersController> logger,
-            PhrasebookDbContext context,
+            IUnitOfWork unitOfWork,
             IValidatorFactory validatorFactory,
             ITimeProvider timeProvider)
-            : base(logger, context, timeProvider, validatorFactory)
+            : base(logger, unitOfWork, timeProvider, validatorFactory)
         {
         }
 
@@ -34,7 +34,7 @@ namespace PhrasebookBackendService.Controllers
         [ActionName("GetAuthenticatedUserInformationAsync")]
         public async Task<IActionResult> GetAuthenticatedUserInformationAsync()
         {
-            Phrasebook.Data.Models.User user = await this.DbContext.GetEntityAsync<Phrasebook.Data.Models.User>(u => u.PrincipalId == this.AuthenticatedUser.PrincipalId);
+            Phrasebook.Data.Models.User user = await this.UnitOfWork.UsersRepository.GetEntityAsync(u => u.PrincipalId == this.AuthenticatedUser.PrincipalId);
             return this.Ok(user.ToUserDto());
         }
 
@@ -50,9 +50,11 @@ namespace PhrasebookBackendService.Controllers
                 return this.BadRequest($"Provided display name '{newDisplayName}' is not valid.");
             }
 
-            Phrasebook.Data.Models.User userToUpdate = await this.DbContext.GetEntityAsync<Phrasebook.Data.Models.User>(u => u.PrincipalId == this.AuthenticatedUser.PrincipalId);
-            userToUpdate.DisplayName = newDisplayName;
-            await this.DbContext.SaveChangesAsync();
+            Phrasebook.Data.Models.User userToUpdate = await this.UnitOfWork.UsersRepository.GetEntityAsync(u => u.PrincipalId == this.AuthenticatedUser.PrincipalId);
+            await this.UnitOfWork.ApplyAndSaveChangesAsync(() =>
+            {
+                userToUpdate.DisplayName = newDisplayName;
+            });
             this.Logger.LogInformation($"Updated user with ID {userToUpdate.Id}");
 
             return this.Ok();
@@ -82,8 +84,8 @@ namespace PhrasebookBackendService.Controllers
                 FullName = this.AuthenticatedUser.FullName,
                 SignedUpOn = this.TimeProvider.Now,
             };
-            this.DbContext.Users.Add(newUser);
-            await DbContext.SaveChangesAsync();
+            this.UnitOfWork.UsersRepository.Add(newUser);
+            await UnitOfWork.SaveChangesAsync();
             this.Logger.LogInformation($"Created new user with ID {newUser.Id}");
 
             return this.CreatedAtAction(nameof(GetAuthenticatedUserInformationAsync), newUser.ToUserDto());
@@ -93,9 +95,9 @@ namespace PhrasebookBackendService.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteUserAsync()
         {
-            var user = await this.DbContext.GetEntityAsync<Phrasebook.Data.Models.User>(u => u.PrincipalId == this.AuthenticatedUser.PrincipalId);
-            this.DbContext.Users.Remove(user);
-            await this.DbContext.SaveChangesAsync();
+            var user = await this.UnitOfWork.UsersRepository.GetEntityAsync(u => u.PrincipalId == this.AuthenticatedUser.PrincipalId);
+            this.UnitOfWork.UsersRepository.Delete(user);
+            await this.UnitOfWork.SaveChangesAsync();
             this.Logger.LogInformation($"Deleted user with ID {user.Id}");
 
             return this.Ok();

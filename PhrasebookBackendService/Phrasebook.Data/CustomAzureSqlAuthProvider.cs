@@ -13,7 +13,7 @@ namespace Phrasebook.Data
     /// </summary>
     public class CustomAzureSqlAuthProvider : SqlAuthenticationProvider
     {
-        private static readonly string[] azureSqlScopes = new[]
+        private static readonly string[] AzureSqlScopes = new[]
         {
             "https://database.windows.net//.default"
         };
@@ -21,7 +21,7 @@ namespace Phrasebook.Data
 
         public override async Task<SqlAuthenticationToken> AcquireTokenAsync(SqlAuthenticationParameters parameters)
         {
-            var tokenRequestContext = new TokenRequestContext(azureSqlScopes);
+            var tokenRequestContext = new TokenRequestContext(AzureSqlScopes);
             var tokenResult = await credential.GetTokenAsync(tokenRequestContext, default);
             return new SqlAuthenticationToken(tokenResult.Token, tokenResult.ExpiresOn);
         }

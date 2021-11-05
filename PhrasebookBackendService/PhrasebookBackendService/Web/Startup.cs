@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Phrasebook.Common;
 using Phrasebook.Data;
+using Phrasebook.Data.Sql;
 using Phrasebook.Data.Validation;
 using PhrasebookBackendService.Authorization;
 
@@ -33,6 +34,8 @@ namespace PhrasebookBackendService.Web
                 // This is needed to be able to find the correct migration files to apply at runtime
                 options.SetSqlConnectionString(this.Configuration, x => x.MigrationsAssembly(Constants.MigrationsAssembly));
             });
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<IValidatorFactory, ValidatorFactory>();
             services.AddScoped<IAuthorizationHandler, SignupHandler>();

@@ -11,6 +11,7 @@ using Phrasebook.Data;
 using Phrasebook.Data.Dto;
 using Phrasebook.Data.Dto.Models;
 using Phrasebook.Data.Dto.Models.RequestData;
+using Phrasebook.Data.Sql;
 using Phrasebook.Data.Validation;
 
 namespace PhrasebookBackendService.Controllers
@@ -37,17 +38,17 @@ namespace PhrasebookBackendService.Controllers
 
         public PhrasebooksController(
             ILogger<PhrasebooksController> logger,
-            PhrasebookDbContext dbContext,
+            IUnitOfWork unitOfWork,
             ITimeProvider timeProvider,
             IValidatorFactory validatorFactory)
-            : base(logger, dbContext, timeProvider, validatorFactory)
+            : base(logger, unitOfWork, timeProvider, validatorFactory)
         {
         }
 
         [HttpGet]
         public async Task<ActionResult<ListResult<Book>>> GetPhrasebooksAsync()
         {
-            IEnumerable<Phrasebook.Data.Models.Book> phrasebooks = await this.DbContext
+            IEnumerable<Phrasebook.Data.Models.Book> phrasebooks = await this.UnitOfWork.BooksRepository
                 .GetEntitiesAsync(p => p.User.Email == this.AuthenticatedUser.Email, navigationPropertiesToInclude: this.properties);
             return Ok(phrasebooks
                 .Select(b => b.ToPhrasebookDto())
@@ -57,7 +58,7 @@ namespace PhrasebookBackendService.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPhrasebookAsync([FromRoute] int id)
         {
-            Phrasebook.Data.Models.Book phrasebook = await this.DbContext
+            Phrasebook.Data.Models.Book phrasebook = await this.UnitOfWork.BooksRepository
                 .GetEntityAsync(p => p.User.Email == this.AuthenticatedUser.Email && p.Id == id, this.extendedProperties);
 
             if (phrasebook == null)
@@ -79,13 +80,13 @@ namespace PhrasebookBackendService.Controllers
 
             string firstLanguageCode = requestData.FirstLanguageCode.ToLower();
             string foreignLanguageCode = requestData.ForeignLanguageCode.ToLower();
-            Phrasebook.Data.Models.Language firstLanguage = await this.DbContext.GetEntityAsync<Phrasebook.Data.Models.Language>(l => l.Code == firstLanguageCode);
+            Phrasebook.Data.Models.Language firstLanguage = await this.UnitOfWork.LanguageRepository.GetEntityAsync(l => l.Code == firstLanguageCode);
             if (firstLanguage == null)
             {
                 return this.BadRequest($"Language with code '{firstLanguageCode}' was not found.");
             }
 
-            Phrasebook.Data.Models.Language foreignLanguage = await this.DbContext.GetEntityAsync<Phrasebook.Data.Models.Language>(l => l.Code == foreignLanguageCode);
+            Phrasebook.Data.Models.Language foreignLanguage = await this.UnitOfWork.LanguageRepository.GetEntityAsync(l => l.Code == foreignLanguageCode);
             if (foreignLanguage == null)
             {
                 return this.BadRequest($"Language with code '{foreignLanguageCode}' was not found.");
@@ -101,15 +102,15 @@ namespace PhrasebookBackendService.Controllers
             Expression<Func<Phrasebook.Data.Models.Book, bool>> bookFilter = p => p.FirstLanguage.Code == firstLanguageCode &&
                     p.ForeignLanguage.Code == foreignLanguageCode &&
                     p.User.Email == this.AuthenticatedUser.Email;
-            Phrasebook.Data.Models.Book existingBook = await this.DbContext.GetEntityAsync(bookFilter, this.properties);
+            Phrasebook.Data.Models.Book existingBook = await this.UnitOfWork.BooksRepository.GetEntityAsync(bookFilter, this.properties);
             if (existingBook != null)
             {
                 return this.BadRequest($"A phrasebook with first language code '{firstLanguageCode}' and foreign language code '{foreignLanguageCode}' already exists.");
             }
 
             // Validation passed: create new phrasebook
-            Phrasebook.Data.Models.User user = await this.DbContext
-                .GetEntityAsync<Phrasebook.Data.Models.User>(u => u.PrincipalId == this.AuthenticatedUser.PrincipalId);
+            Phrasebook.Data.Models.User user = await this.UnitOfWork.UsersRepository
+                .GetEntityAsync(u => u.PrincipalId == this.AuthenticatedUser.PrincipalId);
             Phrasebook.Data.Models.Book bookToCreate = new Phrasebook.Data.Models.Book
             {
                 CreatedOn = this.TimeProvider.Now,
@@ -117,11 +118,11 @@ namespace PhrasebookBackendService.Controllers
                 ForeignLanguageId = foreignLanguage.Id,
                 UserId = user.Id,
             };
-            this.DbContext.Phrasebooks.Add(bookToCreate);
-            await this.DbContext.SaveChangesAsync();
+            this.UnitOfWork.BooksRepository.Add(bookToCreate);
+            await this.UnitOfWork.SaveChangesAsync();
 
             // Get newly created phrasebook from the DB
-            Phrasebook.Data.Models.Book newBook = await this.DbContext.GetEntityAsync(bookFilter, this.properties);
+            Phrasebook.Data.Models.Book newBook = await this.UnitOfWork.BooksRepository.GetEntityAsync(bookFilter, this.properties);
             return this.Ok(newBook.ToPhrasebookDto());
         }
 
@@ -129,15 +130,15 @@ namespace PhrasebookBackendService.Controllers
         public async Task<IActionResult> DeletePhrasebookAsync([FromRoute] int id)
         {
             // Validate that book exists
-            Phrasebook.Data.Models.Book existingBook = await this.DbContext
-                .GetEntityAsync<Phrasebook.Data.Models.Book>(p => p.Id == id && p.User.Email == this.AuthenticatedUser.Email, p => p.User);
+            Phrasebook.Data.Models.Book existingBook = await this.UnitOfWork.BooksRepository
+                .GetEntityAsync(p => p.Id == id && p.User.Email == this.AuthenticatedUser.Email, p => p.User);
             if (existingBook == null)
             {
                 return this.BadRequest($"Could not find phrasebook with ID '{id}' for the authenticated user.");
             }
 
-            this.DbContext.Phrasebooks.Remove(existingBook);
-            await this.DbContext.SaveChangesAsync();
+            this.UnitOfWork.BooksRepository.Delete(existingBook);
+            await this.UnitOfWork.SaveChangesAsync();
             return this.Ok();
         }
     }
