@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Phrasebook.Common;
 using Phrasebook.Data.Sql;
-using Phrasebook.Data.Validation;
 using PhrasebookBackendService.EasyAuth;
+using PhrasebookBackendService.Validation;
 
 namespace PhrasebookBackendService.Controllers
 {

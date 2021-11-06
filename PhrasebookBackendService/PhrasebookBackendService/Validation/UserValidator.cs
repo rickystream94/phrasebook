@@ -1,21 +1,22 @@
 ﻿using Phrasebook.Data.Models;
+using Phrasebook.Data.Sql;
 using System;
 using System.Threading.Tasks;
 
-namespace Phrasebook.Data.Validation
+namespace PhrasebookBackendService.Validation
 {
     public class UserValidator : IUserValidator
     {
-        private PhrasebookDbContext context;
+        private readonly IUnitOfWork unitOfWork;
 
-        public UserValidator(PhrasebookDbContext context)
+        public UserValidator(IUnitOfWork unitOfWork)
         {
-            this.context = context ?? throw new ArgumentNullException(nameof(context));
+            this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         public async Task<bool> HasUserSignedUpAsync(Guid principalId)
         {
-            User user = await this.context.GetEntityAsync<User>(u => u.PrincipalId == principalId);
+            User user = await this.unitOfWork.UsersRepository.GetEntityAsync(u => u.PrincipalId == principalId);
             return user != null;
         }
 

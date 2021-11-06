@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace Phrasebook.Data.Validation
+namespace PhrasebookBackendService.Validation
 {
     public interface IUserValidator
     {

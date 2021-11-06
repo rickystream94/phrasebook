@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 
-namespace Phrasebook.Data.Validation
+namespace PhrasebookBackendService.Validation
 {
     public interface IGenericValidator
     {
-        Task<bool> ValidateAsync();
+        Task ValidateAsync();
     }
 }

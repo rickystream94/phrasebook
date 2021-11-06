@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Phrasebook.Common;
 using Phrasebook.Data;
+using Phrasebook.Data.Sql;
 using System;
 
 namespace PhrasebookBackendService

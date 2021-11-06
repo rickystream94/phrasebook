@@ -1,4 +1,5 @@
-﻿using Phrasebook.Data.Repositories;
+﻿using Phrasebook.Common;
+using Phrasebook.Data.Repositories;
 using System;
 using System.Threading.Tasks;
 
@@ -11,11 +12,11 @@ namespace Phrasebook.Data.Sql
         private readonly Lazy<UsersRepository> usersRepository;
         private readonly Lazy<LanguageRepository> languageRepository;
 
-        public UnitOfWork(PhrasebookDbContext dbContext)
+        public UnitOfWork(PhrasebookDbContext dbContext, ITimeProvider timeProvider)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.booksRepository = new Lazy<BooksRepository>(() => new BooksRepository(this.dbContext));
-            this.usersRepository = new Lazy<UsersRepository>(() => new UsersRepository(this.dbContext));
+            this.booksRepository = new Lazy<BooksRepository>(() => new BooksRepository(this.dbContext, timeProvider));
+            this.usersRepository = new Lazy<UsersRepository>(() => new UsersRepository(this.dbContext, timeProvider));
             this.languageRepository = new Lazy<LanguageRepository>(() => new LanguageRepository(this.dbContext));
         }
 

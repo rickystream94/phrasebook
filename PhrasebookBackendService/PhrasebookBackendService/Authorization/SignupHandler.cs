@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Phrasebook.Data.Validation;
 using PhrasebookBackendService.EasyAuth;
+using PhrasebookBackendService.Validation;
 using System;
 using System.Threading.Tasks;
 

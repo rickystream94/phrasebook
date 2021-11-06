@@ -8,8 +8,8 @@ using Newtonsoft.Json;
 using Phrasebook.Common;
 using Phrasebook.Data;
 using Phrasebook.Data.Sql;
-using Phrasebook.Data.Validation;
 using PhrasebookBackendService.Authorization;
+using PhrasebookBackendService.Validation;
 
 namespace PhrasebookBackendService.Web
 {

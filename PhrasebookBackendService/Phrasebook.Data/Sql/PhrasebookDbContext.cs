@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Phrasebook.Data.Models;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Phrasebook.Data.Sql
 {
@@ -11,6 +13,14 @@ namespace Phrasebook.Data.Sql
             : base(options)
         {
         }
+
+        public DbSet<User> Users { get; set; }
+
+        public DbSet<Book> Phrasebooks { get; set; }
+
+        public DbSet<Phrase> Phrases { get; set; }
+
+        public DbSet<Language> Languages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -40,12 +50,28 @@ namespace Phrasebook.Data.Sql
             modelBuilder.Entity<Phrase>().Property(nameof(Phrase.ForeignLanguageSynonyms)).HasConversion(splitStringConverter);
         }
 
-        public DbSet<User> Users { get; set; }
+        public async Task ApplyAndSaveChangesAsync(Func<Task> applyChanges)
+        {
+            if (applyChanges != null)
+            {
+                await applyChanges();
+            }
 
-        public DbSet<Book> Phrasebooks { get; set; }
+            await this.SaveChangesAsync();
+        }
 
-        public DbSet<Phrase> Phrases { get; set; }
+        public async Task ApplyAndSaveChangesAsync(Action applyChanges)
+        {
+            await this.ApplyAndSaveChangesAsync(async () =>
+            {
+                applyChanges?.Invoke();
+                await Task.CompletedTask;
+            });
+        }
 
-        public DbSet<Language> Languages { get; set; }
+        public async Task SaveChangesAsync()
+        {
+            await this.SaveChangesAsync();
+        }
     }
 }

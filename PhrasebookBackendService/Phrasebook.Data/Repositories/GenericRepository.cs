@@ -12,12 +12,12 @@ namespace Phrasebook.Data.Repositories
     public abstract class GenericRepository<T> : IGenericRepository<T>
         where T : EntityBase
     {
-        private readonly PhrasebookDbContext context;
-
         protected GenericRepository(PhrasebookDbContext context)
         {
-            this.context = context;
+            this.Context = context ?? throw new ArgumentNullException(nameof(context));
         }
+
+        protected PhrasebookDbContext Context { get; }
 
         public async Task<T> GetEntityByIdAsync(int? id, params Expression<Func<T, object>>[] navigationPropertiesToInclude)
         {
@@ -41,14 +41,16 @@ namespace Phrasebook.Data.Repositories
             int? top = null,
             params Expression<Func<T, object>>[] navigationPropertiesToInclude)
         {
-            IQueryable<T> query = this.context.Set<T>();
+            IQueryable<T> query = this.Context.Set<T>();
 
-            if (navigationPropertiesToInclude != null)
+            if (navigationPropertiesToInclude == null)
             {
-                foreach (Expression<Func<T, object>> property in navigationPropertiesToInclude)
-                {
-                    query = query.Include(property);
-                }
+                navigationPropertiesToInclude = this.GetCommonNavigationProperties();
+            }
+
+            foreach (Expression<Func<T, object>> property in navigationPropertiesToInclude)
+            {
+                query = query.Include(property);
             }
 
             if (filter != null)
@@ -71,12 +73,14 @@ namespace Phrasebook.Data.Repositories
 
         public void Add(T newEntity)
         {
-            this.context.Set<T>().Add(newEntity);
+            this.Context.Set<T>().Add(newEntity);
         }
 
         public void Delete(T entityToDelete)
         {
-            this.context.Set<T>().Remove(entityToDelete);
+            this.Context.Set<T>().Remove(entityToDelete);
         }
+
+        protected abstract Expression<Func<T, object>>[] GetCommonNavigationProperties();
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using Phrasebook.Common;
 using Phrasebook.Data.Dto;
 using Phrasebook.Data.Sql;
-using Phrasebook.Data.Validation;
+using PhrasebookBackendService.Validation;
 
 namespace PhrasebookBackendService.Controllers
 {
@@ -16,11 +15,6 @@ namespace PhrasebookBackendService.Controllers
     [ApiController]
     public class UsersController : BaseController
     {
-        private readonly Expression<Func<Phrasebook.Data.Models.User, object>>[] properties = new Expression<Func<Phrasebook.Data.Models.User, object>>[]
-        {
-            u => u.Phrasebooks,
-        };
-
         public UsersController(
             ILogger<UsersController> logger,
             IUnitOfWork unitOfWork,
@@ -34,7 +28,7 @@ namespace PhrasebookBackendService.Controllers
         [ActionName("GetAuthenticatedUserInformationAsync")]
         public async Task<IActionResult> GetAuthenticatedUserInformationAsync()
         {
-            Phrasebook.Data.Models.User user = await this.UnitOfWork.UsersRepository.GetEntityAsync(u => u.PrincipalId == this.AuthenticatedUser.PrincipalId);
+            Phrasebook.Data.Models.User user = await this.UnitOfWork.UsersRepository.GetUserByPrincipalIdAsync(this.AuthenticatedUser.PrincipalId);
             return this.Ok(user.ToUserDto());
         }
 
@@ -50,12 +44,8 @@ namespace PhrasebookBackendService.Controllers
                 return this.BadRequest($"Provided display name '{newDisplayName}' is not valid.");
             }
 
-            Phrasebook.Data.Models.User userToUpdate = await this.UnitOfWork.UsersRepository.GetEntityAsync(u => u.PrincipalId == this.AuthenticatedUser.PrincipalId);
-            await this.UnitOfWork.ApplyAndSaveChangesAsync(() =>
-            {
-                userToUpdate.DisplayName = newDisplayName;
-            });
-            this.Logger.LogInformation($"Updated user with ID {userToUpdate.Id}");
+            Phrasebook.Data.Models.User updatedUser = await this.UnitOfWork.UsersRepository.UpdateUserDisplayNameAsync(this.AuthenticatedUser.PrincipalId, newDisplayName);
+            this.Logger.LogInformation($"Updated user with ID {updatedUser.Id}");
 
             return this.Ok();
         }
@@ -75,30 +65,22 @@ namespace PhrasebookBackendService.Controllers
             }
 
             // Create new user entity
-            Phrasebook.Data.Models.User newUser = new Phrasebook.Data.Models.User
-            {
-                IdentityProvider = this.AuthenticatedUser.IdentityProvider,
-                PrincipalId = principalId,
-                Email = this.AuthenticatedUser.Email,
-                DisplayName = displayName,
-                FullName = this.AuthenticatedUser.FullName,
-                SignedUpOn = this.TimeProvider.Now,
-            };
-            this.UnitOfWork.UsersRepository.Add(newUser);
-            await UnitOfWork.SaveChangesAsync();
+            this.Logger.LogInformation($"Creating new user with principal ID {principalId} from '{this.AuthenticatedUser.IdentityProvider}' Identity Provider");
+            Phrasebook.Data.Models.User newUser = await this.UnitOfWork.UsersRepository
+                .CreateNewUserAsync(this.AuthenticatedUser.IdentityProvider, principalId, this.AuthenticatedUser.Email, displayName, this.AuthenticatedUser.FullName);
             this.Logger.LogInformation($"Created new user with ID {newUser.Id}");
 
             return this.CreatedAtAction(nameof(GetAuthenticatedUserInformationAsync), newUser.ToUserDto());
         }
 
-        // DELETE: api/Users/5
+        // DELETE: api/Users
         [HttpDelete]
         public async Task<IActionResult> DeleteUserAsync()
         {
-            var user = await this.UnitOfWork.UsersRepository.GetEntityAsync(u => u.PrincipalId == this.AuthenticatedUser.PrincipalId);
-            this.UnitOfWork.UsersRepository.Delete(user);
-            await this.UnitOfWork.SaveChangesAsync();
-            this.Logger.LogInformation($"Deleted user with ID {user.Id}");
+            Guid principalId = this.AuthenticatedUser.PrincipalId;
+            this.Logger.LogInformation($"Deleting user with principal ID {principalId}");
+            var user = await this.UnitOfWork.UsersRepository.DeleteUserAsync(principalId);
+            this.Logger.LogInformation($"Successfully deleted user{Environment.NewLine}ID:{user.Id}{Environment.NewLine}Principal ID: {principalId}");
 
             return this.Ok();
         }
