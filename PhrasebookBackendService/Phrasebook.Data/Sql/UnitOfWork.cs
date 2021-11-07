@@ -47,7 +47,7 @@ namespace Phrasebook.Data.Sql
 
         public async Task SaveChangesAsync()
         {
-            await this.dbContext.SaveChangesAsync();
+            await this.dbContext.SaveChangesToDatabaseAsync();
         }
     }
 }

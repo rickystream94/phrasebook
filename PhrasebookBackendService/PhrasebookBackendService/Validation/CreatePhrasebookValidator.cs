@@ -3,7 +3,6 @@ using Phrasebook.Data.Models;
 using Phrasebook.Data.Sql;
 using PhrasebookBackendService.Exceptions;
 using System;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace PhrasebookBackendService.Validation
@@ -22,7 +21,7 @@ namespace PhrasebookBackendService.Validation
             this.requestData = requestData ?? throw new InputValidationException("Provided request data is null");
         }
 
-        public async Task ValidateAsync()
+        public async Task<bool> ValidateAsync()
         {
             // Validate request data
             if (string.IsNullOrWhiteSpace(this.requestData.FirstLanguageCode) || string.IsNullOrWhiteSpace(this.requestData.ForeignLanguageCode))
@@ -57,6 +56,8 @@ namespace PhrasebookBackendService.Validation
             {
                 throw new InputValidationException($"A phrasebook with first language code '{firstLanguage.Code}' and foreign language code '{foreignLanguage.Code}' for user with Principal ID '{user.PrincipalId}' already exists.");
             }
+
+            return true;
         }
     }
 }

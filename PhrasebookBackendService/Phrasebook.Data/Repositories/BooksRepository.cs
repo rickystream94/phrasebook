@@ -35,7 +35,10 @@ namespace Phrasebook.Data.Repositories
 
         public async Task<Book> GetUserPhrasebookByIdAsync(Guid principalId, int phrasebookId, params Expression<Func<Book, object>>[] navigationPropertiesToInclude)
         {
-            return await this.GetEntityAsync(p => p.User.PrincipalId == principalId && p.Id == phrasebookId, navigationPropertiesToInclude ?? this.extendedProperties);
+            navigationPropertiesToInclude = navigationPropertiesToInclude == null || navigationPropertiesToInclude.Length == 0
+                ? this.extendedProperties
+                : navigationPropertiesToInclude;
+            return await this.GetEntityAsync(p => p.User.PrincipalId == principalId && p.Id == phrasebookId, navigationPropertiesToInclude);
         }
 
         public async Task<IEnumerable<Book>> GetUserPhrasebooksAsync(Guid principalId)

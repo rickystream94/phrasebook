@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Phrasebook.Data.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Phrasebook.Data.Models;
 
 namespace Phrasebook.Data.Sql
 {
@@ -52,24 +52,30 @@ namespace Phrasebook.Data.Sql
 
         public async Task ApplyAndSaveChangesAsync(Func<Task> applyChanges)
         {
-            if (applyChanges != null)
+            if (applyChanges == null)
             {
-                await applyChanges();
+                return;
             }
 
-            await this.SaveChangesAsync();
+            await applyChanges();
+            await this.SaveChangesToDatabaseAsync();
         }
 
         public async Task ApplyAndSaveChangesAsync(Action applyChanges)
         {
+            if (applyChanges == null)
+            {
+                return;
+            }
+
             await this.ApplyAndSaveChangesAsync(async () =>
             {
-                applyChanges?.Invoke();
+                applyChanges();
                 await Task.CompletedTask;
             });
         }
 
-        public async Task SaveChangesAsync()
+        public async Task SaveChangesToDatabaseAsync()
         {
             await this.SaveChangesAsync();
         }

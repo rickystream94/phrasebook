@@ -5,8 +5,6 @@ namespace PhrasebookBackendService.Validation
 {
     public interface IValidatorFactory
     {
-        IUserValidator CreateUserValidator();
-
         IGenericValidator CreatePhrasebookValidator(User user, CreatePhrasebookRequestData requestData);
     }
 }

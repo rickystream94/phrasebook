@@ -43,7 +43,7 @@ namespace Phrasebook.Data.Repositories
         {
             IQueryable<T> query = this.Context.Set<T>();
 
-            if (navigationPropertiesToInclude == null)
+            if (navigationPropertiesToInclude == null || navigationPropertiesToInclude.Length == 0)
             {
                 navigationPropertiesToInclude = this.GetCommonNavigationProperties();
             }

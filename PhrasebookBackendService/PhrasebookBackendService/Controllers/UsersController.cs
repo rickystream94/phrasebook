@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Phrasebook.Common;
 using Phrasebook.Data.Dto;
 using Phrasebook.Data.Sql;
+using PhrasebookBackendService.Exceptions;
 using PhrasebookBackendService.Validation;
 
 namespace PhrasebookBackendService.Controllers
@@ -24,6 +25,7 @@ namespace PhrasebookBackendService.Controllers
         {
         }
 
+        // GET api/Users/me
         [HttpGet("me")]
         [ActionName("GetAuthenticatedUserInformationAsync")]
         public async Task<IActionResult> GetAuthenticatedUserInformationAsync()
@@ -32,16 +34,20 @@ namespace PhrasebookBackendService.Controllers
             return this.Ok(user.ToUserDto());
         }
 
-        // PUT: api/Users/5
+        // PUT: api/Users
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut]
         public async Task<IActionResult> UpdateUserAsync([FromBody] string newDisplayName)
         {
-            IUserValidator validator = this.ValidatorFactory.CreateUserValidator();
-            if (!validator.IsValidDisplayName(newDisplayName))
+            try
             {
-                return this.BadRequest($"Provided display name '{newDisplayName}' is not valid.");
+                UserNameValidator.ValidateDisplayName(newDisplayName);
+            }
+            catch(InputValidationException ex)
+            {
+                this.Logger.LogError(ex.Message);
+                return this.BadRequest(ex.Message);
             }
 
             Phrasebook.Data.Models.User updatedUser = await this.UnitOfWork.UsersRepository.UpdateUserDisplayNameAsync(this.AuthenticatedUser.PrincipalId, newDisplayName);
@@ -57,17 +63,31 @@ namespace PhrasebookBackendService.Controllers
         [HttpPost]
         public async Task<IActionResult> SignupUserAsync([FromBody] string displayName)
         {
+            try
+            {
+                UserNameValidator.ValidateDisplayName(displayName);
+            }
+            catch (InputValidationException ex)
+            {
+                this.Logger.LogError(ex.Message);
+                return this.BadRequest(ex.Message);
+            }
+
+            // Validate user is not already signed up
             Guid principalId = this.AuthenticatedUser.PrincipalId;
-            IUserValidator validator = this.ValidatorFactory.CreateUserValidator();
-            if (await validator.HasUserSignedUpAsync(principalId))
+            if (await this.UnitOfWork.UsersRepository.GetUserByPrincipalIdAsync(principalId) != null)
             {
                 return this.BadRequest($"User with principal ID '{principalId}' is already signed up.");
             }
 
             // Create new user entity
             this.Logger.LogInformation($"Creating new user with principal ID {principalId} from '{this.AuthenticatedUser.IdentityProvider}' Identity Provider");
-            Phrasebook.Data.Models.User newUser = await this.UnitOfWork.UsersRepository
-                .CreateNewUserAsync(this.AuthenticatedUser.IdentityProvider, principalId, this.AuthenticatedUser.Email, displayName, this.AuthenticatedUser.FullName);
+            Phrasebook.Data.Models.User newUser = await this.UnitOfWork.UsersRepository.CreateNewUserAsync(
+                this.AuthenticatedUser.IdentityProvider,
+                principalId,
+                this.AuthenticatedUser.Email,
+                displayName,
+                this.AuthenticatedUser.FullName);
             this.Logger.LogInformation($"Created new user with ID {newUser.Id}");
 
             return this.CreatedAtAction(nameof(GetAuthenticatedUserInformationAsync), newUser.ToUserDto());

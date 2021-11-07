@@ -4,6 +4,6 @@ namespace PhrasebookBackendService.Validation
 {
     public interface IGenericValidator
     {
-        Task ValidateAsync();
+        Task<bool> ValidateAsync();
     }
 }

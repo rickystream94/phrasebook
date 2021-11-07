@@ -63,7 +63,8 @@ namespace PhrasebookBackendService.Controllers
             }
             catch (InputValidationException ex)
             {
-                return this.BadRequest(ex);
+                this.Logger.LogError(ex.Message);
+                return this.BadRequest(ex.Message);
             }
 
             // Validation passed: create new phrasebook

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Phrasebook.Data.Models;
+using Phrasebook.Data.Sql;
 using PhrasebookBackendService.EasyAuth;
-using PhrasebookBackendService.Validation;
 using System;
 using System.Threading.Tasks;
 
@@ -8,18 +9,19 @@ namespace PhrasebookBackendService.Authorization
 {
     public class SignupHandler : AuthorizationHandler<SignupRequirement>
     {
-        private readonly IValidatorFactory validatorFactory;
+        private readonly IUnitOfWork unitOfWork;
 
-        public SignupHandler(IValidatorFactory validatorFactory)
+        public SignupHandler(IUnitOfWork unitOfWork)
         {
-            this.validatorFactory = validatorFactory ?? throw new ArgumentNullException(nameof(validatorFactory));
+            this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, SignupRequirement requirement)
         {
-            AuthenticatedUser user = AuthenticatedUser.FromClaimsPrincipal(context.User);
-            IUserValidator userValidator = this.validatorFactory.CreateUserValidator();
-            if (await userValidator.HasUserSignedUpAsync(user.PrincipalId))
+            // The requirement is met only if a registered user already exists in the database, with the same principal ID of the authenticated user
+            AuthenticatedUser authenticatedUser = AuthenticatedUser.FromClaimsPrincipal(context.User);
+            User user = await this.unitOfWork.UsersRepository.GetUserByPrincipalIdAsync(authenticatedUser.PrincipalId);
+            if (user != null)
             {
                 context.Succeed(requirement);
                 return;
