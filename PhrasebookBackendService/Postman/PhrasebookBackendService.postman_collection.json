@@ -1,10 +1,102 @@
 {
 	"info": {
-		"_postman_id": "94d14e5a-ea69-4e03-9627-83204e601797",
+		"_postman_id": "87d42912-8fca-4ec6-9730-3a7b9c2af295",
 		"name": "PhrasebookBackendService",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "GetAuthenticatedUserInformation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/user/me",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"user",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdateUserAsync",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\"\"",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/user",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "SignupUserAsync",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\"\"",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/user",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteUserAsync",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/user",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
 		{
 			"name": "Phrasebooks",
 			"item": [
@@ -14,12 +106,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{BaseUrl}}/phrasebooks",
+							"raw": "{{BaseUrl}}/phrasebook",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"phrasebooks"
+								"phrasebook"
 							]
 						}
 					},
@@ -31,12 +123,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{BaseUrl}}/phrasebooks/:id",
+							"raw": "{{BaseUrl}}/phrasebook/:id",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"phrasebooks",
+								"phrasebook",
 								":id"
 							],
 							"variable": [
@@ -56,7 +148,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"firstLanguageCode\": \"<first-language-code>\",\r\n    \"foreignLanguageCode\": \"<foreign-language-code>\"\r\n}",
+							"raw": "{\r\n    \"firstLanguageCode\": \"\",\r\n    \"foreignLanguageCode\": \"\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -64,12 +156,45 @@
 							}
 						},
 						"url": {
-							"raw": "{{BaseUrl}}/phrasebooks",
+							"raw": "{{BaseUrl}}/phrasebook",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"phrasebooks"
+								"phrasebook"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UpdatePhrasebookAsync",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstLanguageCode\": \"\",\r\n    \"foreignLanguageCode\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/phrasebook/:id",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"phrasebook",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
 							]
 						}
 					},
@@ -81,18 +206,18 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{BaseUrl}}/phrasebooks/:id",
+							"raw": "{{BaseUrl}}/phrasebook/:id",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"phrasebooks",
+								"phrasebook",
 								":id"
 							],
 							"variable": [
 								{
 									"key": "id",
-									"value": null
+									"value": ""
 								}
 							]
 						}
@@ -102,42 +227,46 @@
 			]
 		},
 		{
-			"name": "Users",
+			"name": "Phrases",
 			"item": [
 				{
-					"name": "UpdateUserAsync",
+					"name": "GetPhraseAsync",
 					"request": {
-						"method": "PUT",
+						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "\"<new-display-name>\"",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
-							"raw": "{{BaseUrl}}/users",
+							"raw": "{{BaseUrl}}/phrasebook/:bookId/phrases/:phraseId",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"users"
+								"phrasebook",
+								":bookId",
+								"phrases",
+								":phraseId"
+							],
+							"variable": [
+								{
+									"key": "bookId",
+									"value": ""
+								},
+								{
+									"key": "phraseId",
+									"value": ""
+								}
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "SignupUserAsync",
+					"name": "CreatePhraseAsync",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "\"<display-name>\"",
+							"raw": "{\r\n    \"firstLanguagePhrase\": \"\",\r\n    \"foreignLanguagePhrase\": \"\",\r\n    \"lexicalItemType\": \"\",\r\n    \"foreignLanguageSynonyms\": [],\r\n    \"description\": \"\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -145,47 +274,89 @@
 							}
 						},
 						"url": {
-							"raw": "{{BaseUrl}}/users",
+							"raw": "{{BaseUrl}}/phrasebook/:bookId/phrases",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"users"
+								"phrasebook",
+								":bookId",
+								"phrases"
+							],
+							"variable": [
+								{
+									"key": "bookId",
+									"value": ""
+								}
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "DeleteUserAsync",
+					"name": "UpdatePhraseAsync",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstLanguagePhrase\": \"\",\r\n    \"foreignLanguagePhrase\": \"\",\r\n    \"lexicalItemType\": \"\",\r\n    \"foreignLanguageSynonyms\": [],\r\n    \"description\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/phrasebook/:bookId/phrases/:phraseId",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"phrasebook",
+								":bookId",
+								"phrases",
+								":phraseId"
+							],
+							"variable": [
+								{
+									"key": "bookId",
+									"value": ""
+								},
+								{
+									"key": "phraseId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeletePhraseAsync",
 					"request": {
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{BaseUrl}}/users",
+							"raw": "{{BaseUrl}}/phrasebook/:bookId/phrases/:phraseId",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"users"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "GetAuthenticatedUserInformation",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{BaseUrl}}/users/me",
-							"host": [
-								"{{BaseUrl}}"
+								"phrasebook",
+								":bookId",
+								"phrases",
+								":phraseId"
 							],
-							"path": [
-								"users",
-								"me"
+							"variable": [
+								{
+									"key": "bookId",
+									"value": ""
+								},
+								{
+									"key": "phraseId",
+									"value": ""
+								}
 							]
 						}
 					},
