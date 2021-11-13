@@ -48,6 +48,56 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "CreatePhrasebookAsync",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstLanguageCode\": \"<first-language-code>\",\r\n    \"foreignLanguageCode\": \"<foreign-language-code>\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{BaseUrl}}/phrasebooks",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"phrasebooks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeletePhrasebookAsync",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{BaseUrl}}/phrasebooks/:id",
+							"host": [
+								"{{BaseUrl}}"
+							],
+							"path": [
+								"phrasebooks",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -61,7 +111,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"<new-email>\",\r\n    \"displayName\": \"<new-display-name>\"\r\n}",
+							"raw": "\"<new-display-name>\"",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -69,32 +119,25 @@
 							}
 						},
 						"url": {
-							"raw": "{{BaseUrl}}/users/:id",
+							"raw": "{{BaseUrl}}/users",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": null
-								}
+								"users"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "CreateUserAsync",
+					"name": "SignupUserAsync",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"<email>\",\r\n    \"displayName\": \"<display-name>\"\r\n}",
+							"raw": "\"<display-name>\"",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -119,30 +162,6 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{BaseUrl}}/users/:id",
-							"host": [
-								"{{BaseUrl}}"
-							],
-							"path": [
-								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": null
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "GetUsersAsync",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
 							"raw": "{{BaseUrl}}/users",
 							"host": [
 								"{{BaseUrl}}"
@@ -155,24 +174,18 @@
 					"response": []
 				},
 				{
-					"name": "GetUserByIdAsync",
+					"name": "GetAuthenticatedUserInformation",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{BaseUrl}}/users/:id",
+							"raw": "{{BaseUrl}}/users/me",
 							"host": [
 								"{{BaseUrl}}"
 							],
 							"path": [
 								"users",
-								":id"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": null
-								}
+								"me"
 							]
 						}
 					},
