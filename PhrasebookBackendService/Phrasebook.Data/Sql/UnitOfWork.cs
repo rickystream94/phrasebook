@@ -8,23 +8,27 @@ namespace Phrasebook.Data.Sql
     public class UnitOfWork : IUnitOfWork
     {
         private readonly PhrasebookDbContext dbContext;
-        private readonly Lazy<BooksRepository> booksRepository;
-        private readonly Lazy<UsersRepository> usersRepository;
+        private readonly Lazy<BookRepository> bookRepository;
+        private readonly Lazy<UserRepository> userRepository;
         private readonly Lazy<LanguageRepository> languageRepository;
+        private readonly Lazy<PhraseRepository> phraseRepository;
 
         public UnitOfWork(PhrasebookDbContext dbContext, ITimeProvider timeProvider)
         {
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
-            this.booksRepository = new Lazy<BooksRepository>(() => new BooksRepository(this.dbContext, timeProvider));
-            this.usersRepository = new Lazy<UsersRepository>(() => new UsersRepository(this.dbContext, timeProvider));
+            this.bookRepository = new Lazy<BookRepository>(() => new BookRepository(this.dbContext, timeProvider));
+            this.userRepository = new Lazy<UserRepository>(() => new UserRepository(this.dbContext, timeProvider));
             this.languageRepository = new Lazy<LanguageRepository>(() => new LanguageRepository(this.dbContext));
+            this.phraseRepository = new Lazy<PhraseRepository>(() => new PhraseRepository(this.dbContext, timeProvider));
         }
 
-        public IBooksRepository BooksRepository => this.booksRepository.Value;
+        public IBookRepository BookRepository => this.bookRepository.Value;
 
-        public IUsersRepository UsersRepository => this.usersRepository.Value;
+        public IUserRepository UserRepository => this.userRepository.Value;
 
         public ILanguageRepository LanguageRepository => this.languageRepository.Value;
+
+        public IPhraseRepository PhraseRepository => this.phraseRepository.Value;
 
         public async Task ApplyAndSaveChangesAsync(Func<Task> applyChanges)
         {

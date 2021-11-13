@@ -6,11 +6,13 @@ namespace Phrasebook.Data.Sql
 {
     public interface IUnitOfWork
     {
-        IBooksRepository BooksRepository { get; }
+        IBookRepository BookRepository { get; }
 
-        IUsersRepository UsersRepository { get; }
+        IUserRepository UserRepository { get; }
 
         ILanguageRepository LanguageRepository { get; }
+
+        IPhraseRepository PhraseRepository { get; }
 
         Task ApplyAndSaveChangesAsync(Func<Task> applyChanges);
 

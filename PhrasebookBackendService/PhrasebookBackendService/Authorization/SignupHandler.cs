@@ -20,7 +20,7 @@ namespace PhrasebookBackendService.Authorization
         {
             // The requirement is met only if a registered user already exists in the database, with the same principal ID of the authenticated user
             AuthenticatedUser authenticatedUser = AuthenticatedUser.FromClaimsPrincipal(context.User);
-            User user = await this.unitOfWork.UsersRepository.GetUserByPrincipalIdAsync(authenticatedUser.PrincipalId);
+            User user = await this.unitOfWork.UserRepository.GetUserByPrincipalIdAsync(authenticatedUser.PrincipalId);
             if (user != null)
             {
                 context.Succeed(requirement);

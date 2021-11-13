@@ -1,6 +1,5 @@
 ﻿using System;
 using Phrasebook.Data.Dto.Models.RequestData;
-using Phrasebook.Data.Models;
 using Phrasebook.Data.Sql;
 
 namespace PhrasebookBackendService.Validation
@@ -14,9 +13,14 @@ namespace PhrasebookBackendService.Validation
             this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
-        public IGenericValidator CreatePhrasebookValidator(User user, CreatePhrasebookRequestData requestData)
+        public IGenericValidator CreateOrUpdatePhrasebookValidator(Guid principalId, CreateOrUpdatePhrasebookRequestData requestData, int? existingPhrasebookId = null)
         {
-            return new CreatePhrasebookValidator(this.unitOfWork, user, requestData);
+            return new CreateOrUpdatePhrasebookValidator(this.unitOfWork, principalId, requestData, existingPhrasebookId);
+        }
+
+        public IGenericValidator CreateOrUpdatePhraseValidator(Guid principalId, CreateOrUpdatePhraseRequestData requestData, int bookId, int ? existingPhraseId = null)
+        {
+            return new CreateOrUpdatePhraseValidator(this.unitOfWork, principalId, requestData, bookId, existingPhraseId);
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Phrasebook.Data.Dto.Models;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -22,6 +21,7 @@ namespace Phrasebook.Data.Dto
         {
             return new Phrase
             {
+                Id = phrase.Id,
                 CreatedOn = phrase.CreatedOn,
                 CorrectnessCount = phrase.CorrectnessCount,
                 Description = phrase.Description,

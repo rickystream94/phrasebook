@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Phrasebook.Data.Repositories
 {
-    public interface IUsersRepository : IGenericRepository<User>
+    public interface IUserRepository : IGenericRepository<User>
     {
         Task<User> GetUserByPrincipalIdAsync(Guid principalId);
 

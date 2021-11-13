@@ -47,7 +47,9 @@ namespace Phrasebook.Data.Sql
             var splitStringConverter = new ValueConverter<IEnumerable<string>, string>(
                 list => string.Join(';', list),
                 s => s.Split(new[] { ';' }));
-            modelBuilder.Entity<Phrase>().Property(nameof(Phrase.ForeignLanguageSynonyms)).HasConversion(splitStringConverter);
+            modelBuilder.Entity<Phrase>()
+                .Property(nameof(Phrase.ForeignLanguageSynonyms))
+                .HasConversion(splitStringConverter);
         }
 
         public async Task ApplyAndSaveChangesAsync(Func<Task> applyChanges)
@@ -78,6 +80,12 @@ namespace Phrasebook.Data.Sql
         public async Task SaveChangesToDatabaseAsync()
         {
             await this.SaveChangesAsync();
+        }
+
+        public async Task ReloadEntityAsync<T>(T entity)
+            where T : EntityBase
+        {
+            await this.Entry(entity).ReloadAsync();
         }
     }
 }

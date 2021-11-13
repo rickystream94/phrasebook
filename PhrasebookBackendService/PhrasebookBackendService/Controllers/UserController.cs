@@ -14,10 +14,10 @@ namespace PhrasebookBackendService.Controllers
     [Route("api/[controller]")]
     [Authorize(Policy = Constants.UserIsSignedUpPolicy)]
     [ApiController]
-    public class UsersController : BaseController
+    public class UserController : BaseController
     {
-        public UsersController(
-            ILogger<UsersController> logger,
+        public UserController(
+            ILogger<UserController> logger,
             IUnitOfWork unitOfWork,
             IValidatorFactory validatorFactory,
             ITimeProvider timeProvider)
@@ -30,7 +30,7 @@ namespace PhrasebookBackendService.Controllers
         [ActionName("GetAuthenticatedUserInformationAsync")]
         public async Task<IActionResult> GetAuthenticatedUserInformationAsync()
         {
-            Phrasebook.Data.Models.User user = await this.UnitOfWork.UsersRepository.GetUserByPrincipalIdAsync(this.AuthenticatedUser.PrincipalId);
+            Phrasebook.Data.Models.User user = await this.UnitOfWork.UserRepository.GetUserByPrincipalIdAsync(this.AuthenticatedUser.PrincipalId);
             return this.Ok(user.ToUserDto());
         }
 
@@ -50,7 +50,7 @@ namespace PhrasebookBackendService.Controllers
                 return this.BadRequest(ex.Message);
             }
 
-            Phrasebook.Data.Models.User updatedUser = await this.UnitOfWork.UsersRepository.UpdateUserDisplayNameAsync(this.AuthenticatedUser.PrincipalId, newDisplayName);
+            Phrasebook.Data.Models.User updatedUser = await this.UnitOfWork.UserRepository.UpdateUserDisplayNameAsync(this.AuthenticatedUser.PrincipalId, newDisplayName);
             this.Logger.LogInformation($"Updated user with ID {updatedUser.Id}");
 
             return this.Ok();
@@ -75,14 +75,14 @@ namespace PhrasebookBackendService.Controllers
 
             // Validate user is not already signed up
             Guid principalId = this.AuthenticatedUser.PrincipalId;
-            if (await this.UnitOfWork.UsersRepository.GetUserByPrincipalIdAsync(principalId) != null)
+            if (await this.UnitOfWork.UserRepository.GetUserByPrincipalIdAsync(principalId) != null)
             {
                 return this.BadRequest($"User with principal ID '{principalId}' is already signed up.");
             }
 
             // Create new user entity
             this.Logger.LogInformation($"Creating new user with principal ID {principalId} from '{this.AuthenticatedUser.IdentityProvider}' Identity Provider");
-            Phrasebook.Data.Models.User newUser = await this.UnitOfWork.UsersRepository.CreateNewUserAsync(
+            Phrasebook.Data.Models.User newUser = await this.UnitOfWork.UserRepository.CreateNewUserAsync(
                 this.AuthenticatedUser.IdentityProvider,
                 principalId,
                 this.AuthenticatedUser.Email,
@@ -99,7 +99,7 @@ namespace PhrasebookBackendService.Controllers
         {
             Guid principalId = this.AuthenticatedUser.PrincipalId;
             this.Logger.LogInformation($"Deleting user with principal ID {principalId}");
-            var user = await this.UnitOfWork.UsersRepository.DeleteUserAsync(principalId);
+            var user = await this.UnitOfWork.UserRepository.DeleteUserAsync(principalId);
             this.Logger.LogInformation($"Successfully deleted user{Environment.NewLine}ID:{user.Id}{Environment.NewLine}Principal ID: {principalId}");
 
             return this.Ok();

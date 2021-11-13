@@ -1,5 +1,4 @@
-﻿using Phrasebook.Data.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace Phrasebook.Data.Dto.Models

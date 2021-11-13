@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace Phrasebook.Data.Repositories
 {
-    public class UsersRepository : GenericRepository<User>, IUsersRepository
+    public class UserRepository : GenericRepository<User>, IUserRepository
     {
         private readonly ITimeProvider timeProvider;
 
-        public UsersRepository(PhrasebookDbContext context, ITimeProvider timeProvider)
+        public UserRepository(PhrasebookDbContext context, ITimeProvider timeProvider)
             : base(context)
         {
             this.timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
