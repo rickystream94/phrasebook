@@ -35,8 +35,8 @@ namespace Phrasebook.Data.Repositories
             };
             await this.Context.ApplyAndSaveChangesAsync(() => this.Add(userToCreate));
 
-            User createdUser = await this.GetUserByPrincipalIdAsync(principalId);
-            return createdUser;
+            await this.Context.ReloadEntityAsync(userToCreate);
+            return userToCreate;
         }
 
         public async Task<User> UpdateUserDisplayNameAsync(Guid principalId, string newDisplayName)
@@ -47,6 +47,7 @@ namespace Phrasebook.Data.Repositories
                 userToUpdate.DisplayName = newDisplayName;
             });
 
+            await this.Context.ReloadEntityAsync(userToUpdate);
             return userToUpdate;
         }
 

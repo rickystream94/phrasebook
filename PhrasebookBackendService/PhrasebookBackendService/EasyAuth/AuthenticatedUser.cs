@@ -1,4 +1,4 @@
-﻿using Phrasebook.Common;
+﻿using Phrasebook.Common.Constants;
 using System;
 using System.Linq;
 using System.Security.Claims;

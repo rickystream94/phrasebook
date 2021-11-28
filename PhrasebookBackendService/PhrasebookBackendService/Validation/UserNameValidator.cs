@@ -1,4 +1,5 @@
-﻿using PhrasebookBackendService.Exceptions;
+﻿using Phrasebook.Common;
+using PhrasebookBackendService.Exceptions;
 
 namespace PhrasebookBackendService.Validation
 {
@@ -6,12 +7,10 @@ namespace PhrasebookBackendService.Validation
     {
         public static void ValidateDisplayName(string displayName)
         {
-            if (string.IsNullOrWhiteSpace(displayName))
+            if (!displayName.IsValidDisplayName())
             {
                 throw new InputValidationException($"Provided display name '{displayName}' is not valid.");
             }
-
-            // TODO: add more validation (e.g. is valid alphanumeric string)
         }
     }
 }

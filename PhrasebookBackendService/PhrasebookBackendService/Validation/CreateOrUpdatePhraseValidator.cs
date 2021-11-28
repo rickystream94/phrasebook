@@ -1,4 +1,5 @@
-﻿using Phrasebook.Data.Dto.Models.RequestData;
+﻿using Phrasebook.Common.Constants;
+using Phrasebook.Data.Dto.Models.RequestData;
 using Phrasebook.Data.Models;
 using Phrasebook.Data.Sql;
 using PhrasebookBackendService.Exceptions;
@@ -55,8 +56,8 @@ namespace PhrasebookBackendService.Validation
 
                 // Validate that no other phrase records exist in the same phrasebook, that match either the first or foreign language phrase
                 if (book.Phrases.Where(
-                    p => p.FirstLanguagePhrase.ToLowerInvariant() == this.requestData.FirstLanguagePhrase.ToLowerInvariant() ||
-                    p.ForeignLanguagePhrase.ToLowerInvariant() == this.requestData.ForeignLanguagePhrase.ToLowerInvariant()).Any())
+                    p => p.FirstLanguagePhrase == this.requestData.FirstLanguagePhrase.ToLowerInvariant() ||
+                    p.ForeignLanguagePhrase == this.requestData.ForeignLanguagePhrase.ToLowerInvariant()).Any())
                 {
                     errors.Add($"A phrase already exists with the same {nameof(this.requestData.FirstLanguagePhrase)} or {nameof(this.requestData.ForeignLanguagePhrase)} in phrasebook with ID {this.bookId} for user with principal ID {this.principalId}.");
                 }
@@ -82,7 +83,15 @@ namespace PhrasebookBackendService.Validation
                 }
             }
 
-            // TODO: Validate length of phrases and synonyms
+            if (this.requestData.FirstLanguagePhrase.Length >= Constants.MaxPhraseLength || this.requestData.ForeignLanguagePhrase.Length >= Constants.MaxPhraseLength)
+            {
+                errors.Add($"{nameof(this.requestData.FirstLanguagePhrase)} or {nameof(this.requestData.ForeignLanguagePhrase)} exceed max allowed length of {Constants.MaxPhraseLength} characters.");
+            }
+
+            if (string.Join(';', this.requestData.ForeignLanguageSynonyms).Length >= Constants.MaxSynonymsLength)
+            {
+                errors.Add($"{nameof(this.requestData.ForeignLanguageSynonyms)} exceed max allowed joined string length of {Constants.MaxSynonymsLength} 500 characters.");
+            }
 
             if (errors.Count != 0)
             {

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
-using Phrasebook.Common;
+using Phrasebook.Common.Constants;
 using System;
 
 namespace Phrasebook.Data

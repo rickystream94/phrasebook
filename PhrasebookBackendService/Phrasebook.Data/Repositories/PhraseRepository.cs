@@ -2,6 +2,7 @@
 using Phrasebook.Data.Models;
 using Phrasebook.Data.Sql;
 using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -27,13 +28,13 @@ namespace Phrasebook.Data.Repositories
             return await this.GetEntityAsync(p => p.Id == phraseId && p.PhrasebookId == bookId && p.Phrasebook.User.PrincipalId == principalId);
         }
 
-        public async Task<Phrase> CreatePhraseAsync(int bookId, Guid principalId, string firstLanguagePhrase, string foreignLanguagePhrase, LexicalItemType lexicalItemType, string[] foreignLanguageSynonyms, string description)
+        public async Task<Phrase> CreatePhraseAsync(int bookId, Guid principalId, string firstLanguagePhrase, string foreignLanguagePhrase, LexicalItemType lexicalItemType, string[] foreignLanguageSynonyms = null, string description = null)
         {
             Phrase phrase = new Phrase
             {
-                FirstLanguagePhrase = firstLanguagePhrase,
-                ForeignLanguagePhrase = foreignLanguagePhrase,
-                ForeignLanguageSynonyms = foreignLanguageSynonyms,
+                FirstLanguagePhrase = firstLanguagePhrase.ToLowerInvariant(),
+                ForeignLanguagePhrase = foreignLanguagePhrase.ToLowerInvariant(),
+                ForeignLanguageSynonyms = foreignLanguageSynonyms.Select(s => s.ToLowerInvariant()).ToArray(),
                 LexicalItemType = lexicalItemType,
                 PhrasebookId = bookId,
                 CreatedOn = this.timeProvider.Now,
@@ -54,12 +55,12 @@ namespace Phrasebook.Data.Repositories
             {
                 if (!string.IsNullOrWhiteSpace(firstLanguagePhrase))
                 {
-                    phraseToUpdate.FirstLanguagePhrase = firstLanguagePhrase;
+                    phraseToUpdate.FirstLanguagePhrase = firstLanguagePhrase.ToLowerInvariant();
                 }
 
                 if (!string.IsNullOrWhiteSpace(foreignLanguagePhrase))
                 {
-                    phraseToUpdate.ForeignLanguagePhrase = foreignLanguagePhrase;
+                    phraseToUpdate.ForeignLanguagePhrase = foreignLanguagePhrase.ToLowerInvariant();
                 }
 
                 if (lexicalItemType.HasValue)
@@ -69,7 +70,7 @@ namespace Phrasebook.Data.Repositories
 
                 if (foreignLanguageSynonyms != null)
                 {
-                    phraseToUpdate.ForeignLanguageSynonyms = foreignLanguageSynonyms;
+                    phraseToUpdate.ForeignLanguageSynonyms = foreignLanguageSynonyms.Select(s => s.ToLowerInvariant()).ToArray();
                 }
 
                 if (description != null)

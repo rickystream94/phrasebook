@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Phrasebook.Common;
+using Phrasebook.Common.Constants;
 using Phrasebook.Data.Dto;
 using Phrasebook.Data.Dto.Models;
 using Phrasebook.Data.Dto.Models.RequestData;
@@ -33,7 +34,7 @@ namespace PhrasebookBackendService.Controllers
         public async Task<ActionResult<ListResult<Book>>> GetPhrasebooksAsync()
         {
             IEnumerable<Phrasebook.Data.Models.Book> phrasebooks = await this.UnitOfWork.BookRepository.GetPhrasebooksAsync(this.AuthenticatedUser.PrincipalId);
-            return Ok(phrasebooks
+            return this.Ok(phrasebooks
                 .Select(b => b.ToPhrasebookDto())
                 .ToListResult());
         }
@@ -48,7 +49,7 @@ namespace PhrasebookBackendService.Controllers
                 return this.NotFound();
             }
 
-            return Ok(phrasebook.ToPhrasebookDto());
+            return this.Ok(phrasebook.ToPhrasebookDto());
         }
 
         [HttpPost]

@@ -19,17 +19,6 @@ namespace Phrasebook.Data.Repositories
 
         protected PhrasebookDbContext Context { get; }
 
-        public async Task<T> GetEntityByIdAsync(int? id, params Expression<Func<T, object>>[] navigationPropertiesToInclude)
-        {
-            if (!id.HasValue)
-            {
-                return null;
-            }
-
-            // TODO: implement with FindAsync()
-            return (await this.GetEntitiesAsync(e => e.Id == id.Value, navigationPropertiesToInclude: navigationPropertiesToInclude)).SingleOrDefault();
-        }
-
         public async Task<T> GetEntityAsync(Expression<Func<T, bool>> filter, params Expression<Func<T, object>>[] navigationPropertiesToInclude)
         {
             return (await this.GetEntitiesAsync(filter, navigationPropertiesToInclude: navigationPropertiesToInclude)).SingleOrDefault();

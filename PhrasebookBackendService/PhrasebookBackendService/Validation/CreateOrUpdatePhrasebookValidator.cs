@@ -62,7 +62,7 @@ namespace PhrasebookBackendService.Validation
                 existingBook = await this.unitOfWork.BookRepository.GetPhrasebookByLanguagesAsync(this.principalId, firstLanguage, foreignLanguage);
                 if (existingBook != null)
                 {
-                    errors.Add($"A phrasebook with first language code '{firstLanguage.Code}' and foreign language code '{foreignLanguage.Code}' for user with Principal ID '{this.principalId}' already exists.");
+                    errors.Add($"A phrasebook with first language code '{firstLanguage.Id}' and foreign language code '{foreignLanguage.Id}' for user with Principal ID '{this.principalId}' already exists.");
                 }
             }
             else

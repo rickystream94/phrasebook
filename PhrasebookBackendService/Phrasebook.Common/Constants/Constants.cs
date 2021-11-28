@@ -1,6 +1,6 @@
-﻿namespace Phrasebook.Common
+﻿namespace Phrasebook.Common.Constants
 {
-    public static class Constants
+    public static partial class Constants
     {
         public const string AspNetCoreEnvironmentVariableName = "ASPNETCORE_ENVIRONMENT";
 
@@ -35,6 +35,28 @@
         public const string AuthenticationSchemeName = "Signup";
 
         #endregion
+
+        #region Phrases
+
+        public const int MaxPhraseLength = 100;
+
+        public const int MaxSynonymsLength = 500;
+
+        #endregion
+
+        #region Local Development
+
+        public const string DevelopmentUserPrincipalId = "7c5c128c-395b-4610-874b-cddc0ed1a8ef";
+
+        public const string DevelopmentUserEmail = "dev@test.com";
+
+        public const string DevelopmentUserFullName = "Dev User";
+
+        public const string DevelopmentUserIdentityProvider = "dev";
+
+        #endregion
+
+        public const string SupportedLanguagesFilePath = @"Languages\supportedLanguages.json";
 
         private const string AppSettingsJsonFormat = "appsettings.{0}.json";
 

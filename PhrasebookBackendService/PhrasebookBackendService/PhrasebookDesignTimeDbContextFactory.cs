@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
-using Phrasebook.Common;
+using Phrasebook.Common.Constants;
 using Phrasebook.Data;
 using Phrasebook.Data.Sql;
 using System;

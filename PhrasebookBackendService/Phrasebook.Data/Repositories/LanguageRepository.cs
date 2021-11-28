@@ -15,7 +15,7 @@ namespace Phrasebook.Data.Repositories
 
         public async Task<Language> GetLanguageByCodeAsync(string languageCode)
         {
-            return await this.GetEntityAsync(l => l.Code == languageCode.ToLower());
+            return await this.GetEntityAsync(l => l.Id == languageCode.ToLower());
         }
 
         protected override Expression<Func<Language, object>>[] GetCommonNavigationProperties()

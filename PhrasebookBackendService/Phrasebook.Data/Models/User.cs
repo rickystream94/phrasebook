@@ -6,6 +6,8 @@ namespace Phrasebook.Data.Models
 {
     public class User : EntityBase
     {
+        public int Id { get; set; }
+
         [Required]
         [StringLength(64, MinimumLength = 5)]
         public string Email { get; set; }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Phrasebook.Common.Languages;
 using Phrasebook.Data.Models;
 
 namespace Phrasebook.Data.Sql
@@ -50,6 +52,13 @@ namespace Phrasebook.Data.Sql
             modelBuilder.Entity<Phrase>()
                 .Property(nameof(Phrase.ForeignLanguageSynonyms))
                 .HasConversion(splitStringConverter);
+
+            // Seed fixed data about languages
+            SupportedLanguage[] supportedLanguages = LanguageManager.SupportedLanguages;
+            Language[] languageEntities = supportedLanguages
+                .Select(l => new Language { Id = l.Code, DisplayName = l.Name })
+                .ToArray();
+            modelBuilder.Entity<Language>().HasData(languageEntities);
         }
 
         public async Task ApplyAndSaveChangesAsync(Func<Task> applyChanges)

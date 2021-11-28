@@ -6,12 +6,14 @@ namespace Phrasebook.Data.Models
 {
     public class Book : EntityBase
     {
+        public int Id { get; set; }
+
         [Required]
         public int UserId { get; set; }
 
-        public int? FirstLanguageId { get; set; }
+        public string FirstLanguageId { get; set; }
 
-        public int? ForeignLanguageId { get; set; }
+        public string ForeignLanguageId { get; set; }
 
         public DateTime CreatedOn { get; set; }
 

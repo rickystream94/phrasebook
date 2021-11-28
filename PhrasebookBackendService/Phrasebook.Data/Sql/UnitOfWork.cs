@@ -30,6 +30,8 @@ namespace Phrasebook.Data.Sql
 
         public IPhraseRepository PhraseRepository => this.phraseRepository.Value;
 
+        public PhrasebookDbContext Context => this.dbContext;
+
         public async Task ApplyAndSaveChangesAsync(Func<Task> applyChanges)
         {
             if (applyChanges != null)

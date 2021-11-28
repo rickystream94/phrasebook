@@ -3,8 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Phrasebook.Common;
-using Phrasebook.Data;
+using Phrasebook.Common.Constants;
 using Phrasebook.Data.Development;
 using Phrasebook.Data.Sql;
 using PhrasebookBackendService.Web;
@@ -45,9 +44,8 @@ namespace PhrasebookBackendService
             var services = scope.ServiceProvider;
             try
             {
-                var context = services.GetRequiredService<PhrasebookDbContext>();
-                var timeProvider = services.GetRequiredService<ITimeProvider>();
-                DbInitializer.Initialize(context, timeProvider);
+                var unitOfWork = services.GetRequiredService<IUnitOfWork>();
+                DbInitializer.InitializeAsync(unitOfWork).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {

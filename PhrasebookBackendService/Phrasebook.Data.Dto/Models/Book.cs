@@ -9,9 +9,9 @@ namespace Phrasebook.Data.Dto.Models
 
         public DateTime CreatedOn { get; set; }
 
-        public string FirstLanguageDisplayName { get; set; }
+        public string FirstLanguageName { get; set; }
 
-        public string ForeignLanguageDisplayName { get; set; }
+        public string ForeignLanguageName { get; set; }
 
         public IReadOnlyCollection<Phrase> Phrases { get; set; }
     }

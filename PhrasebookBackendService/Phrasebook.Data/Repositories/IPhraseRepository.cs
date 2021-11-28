@@ -10,7 +10,7 @@ namespace Phrasebook.Data.Repositories
 
         Task<Phrase> UpdatePhraseAsync(int bookId, int phraseId, Guid principalId, string firstLanguagePhrase = null, string foreignLanguagePhrase = null, LexicalItemType? LexicalItemType = null, string[] foreignLanguageSynonyms = null, string description = null);
 
-        Task<Phrase> CreatePhraseAsync(int bookId, Guid principalId, string firstLanguagePhrase, string foreignLanguagePhrase, LexicalItemType LexicalItemType, string[] foreignLanguageSynonyms, string description);
+        Task<Phrase> CreatePhraseAsync(int bookId, Guid principalId, string firstLanguagePhrase, string foreignLanguagePhrase, LexicalItemType LexicalItemType, string[] foreignLanguageSynonyms = null, string description = null);
 
         Task DeletePhraseAsync(int bookId, int phraseId, Guid principalId);
     }

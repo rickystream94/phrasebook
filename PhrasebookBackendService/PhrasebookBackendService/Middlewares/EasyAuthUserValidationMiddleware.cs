@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Phrasebook.Common;
+using Phrasebook.Common.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,6 @@ namespace PhrasebookBackendService.Middlewares
 {
     public class EasyAuthUserValidationMiddleware
     {
-        private const string DevelopmentPrincipalIdString = "7c5c128c-395b-4610-874b-cddc0ed1a8ef"; // Just a random GUID to be used for development
         private readonly RequestDelegate next;
         private readonly ILogger<EasyAuthUserValidationMiddleware> logger;
 
@@ -48,12 +47,12 @@ namespace PhrasebookBackendService.Middlewares
             else
             {
                 // Development mode: set test user
-                principalId = DevelopmentPrincipalIdString;
-                identityProvider = "dev";
+                principalId = Constants.DevelopmentUserPrincipalId;
+                identityProvider = Constants.DevelopmentUserIdentityProvider;
                 claims = new Claim[]
                 {
-                    new Claim(Constants.EasyAuthFullNameClaimType, "Dev User"),
-                    new Claim(Constants.EasyAuthEmailClaimType, "dev@test.com"),
+                    new Claim(Constants.EasyAuthFullNameClaimType, Constants.DevelopmentUserFullName),
+                    new Claim(Constants.EasyAuthEmailClaimType, Constants.DevelopmentUserEmail),
                 };
             }
 

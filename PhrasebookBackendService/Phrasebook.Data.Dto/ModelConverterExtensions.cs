@@ -38,8 +38,8 @@ namespace Phrasebook.Data.Dto
             {
                 Id = book.Id,
                 CreatedOn = book.CreatedOn,
-                FirstLanguageDisplayName = book.FirstLanguage.DisplayName,
-                ForeignLanguageDisplayName = book.ForeignLanguage.DisplayName,
+                FirstLanguageName = book.FirstLanguage.DisplayName,
+                ForeignLanguageName = book.ForeignLanguage.DisplayName,
                 Phrases = book.Phrases != null ? new ReadOnlyCollection<Phrase>(book.Phrases.Select(p => p.ToPhraseDto()).ToList()) : null
             };
         }

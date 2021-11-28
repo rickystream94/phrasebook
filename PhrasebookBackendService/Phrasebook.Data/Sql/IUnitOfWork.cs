@@ -14,6 +14,8 @@ namespace Phrasebook.Data.Sql
 
         IPhraseRepository PhraseRepository { get; }
 
+        PhrasebookDbContext Context { get; }
+
         Task ApplyAndSaveChangesAsync(Func<Task> applyChanges);
 
         Task ApplyAndSaveChangesAsync(Action applyChanges);
