@@ -49,7 +49,7 @@ namespace PhrasebookBackendService.Validation
                     errors.Add($"{nameof(this.requestData.FirstLanguagePhrase)} or {nameof(this.requestData.ForeignLanguagePhrase)} were not provided or are empty.");
                 }
 
-                if (!this.requestData.LexicalItemType.HasValue)
+                if (string.IsNullOrWhiteSpace(this.requestData.LexicalItemType))
                 {
                     errors.Add($"{nameof(this.requestData.LexicalItemType)} must be provided when creating a new phrase.");
                 }
@@ -81,6 +81,11 @@ namespace PhrasebookBackendService.Validation
                 {
                     errors.Add($"{nameof(this.requestData.ForeignLanguagePhrase)} must not be empty.");
                 }
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.requestData.LexicalItemType) && !Enum.TryParse<LexicalItemType>(this.requestData.LexicalItemType, true, out _))
+            {
+                errors.Add($"Invalid value provided for {nameof(this.requestData.LexicalItemType)}: {this.requestData.LexicalItemType}. Value must be one of the supported lexical item types: {string.Join(", ", Enum.GetNames(typeof(LexicalItemType)))}");
             }
 
             if (this.requestData.FirstLanguagePhrase.Length >= Constants.MaxPhraseLength || this.requestData.ForeignLanguagePhrase.Length >= Constants.MaxPhraseLength)

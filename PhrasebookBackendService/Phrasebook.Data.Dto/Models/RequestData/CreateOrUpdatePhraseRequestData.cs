@@ -6,7 +6,7 @@
 
         public string ForeignLanguagePhrase { get; set; }
 
-        public LexicalItemType? LexicalItemType { get; set; }
+        public string LexicalItemType { get; set; }
 
         public string[] ForeignLanguageSynonyms { get; set; }
 

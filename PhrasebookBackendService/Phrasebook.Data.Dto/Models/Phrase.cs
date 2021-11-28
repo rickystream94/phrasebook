@@ -11,7 +11,7 @@ namespace Phrasebook.Data.Dto.Models
 
         public string ForeignLanguagePhrase { get; set; }
 
-        public LexicalItemType LexicalItemType { get; set; }
+        public string LexicalItemType { get; set; }
 
         public IReadOnlyCollection<string> ForeignLanguageSynonyms { get; set; }
 

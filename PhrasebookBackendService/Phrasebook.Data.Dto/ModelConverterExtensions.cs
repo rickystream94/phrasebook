@@ -28,7 +28,7 @@ namespace Phrasebook.Data.Dto
                 FirstLanguagePhrase = phrase.FirstLanguagePhrase,
                 ForeignLanguagePhrase = phrase.ForeignLanguagePhrase,
                 ForeignLanguageSynonyms = phrase.ForeignLanguageSynonyms != null ? new ReadOnlyCollection<string>(phrase.ForeignLanguageSynonyms.ToList()) : null,
-                LexicalItemType = (LexicalItemType)phrase.LexicalItemType,
+                LexicalItemType = phrase.LexicalItemType.ToString(),
             };
         }
 

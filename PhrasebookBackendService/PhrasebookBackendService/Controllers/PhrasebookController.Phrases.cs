@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Phrasebook.Data.Dto;
+using Phrasebook.Data.Dto.Models;
 using Phrasebook.Data.Dto.Models.RequestData;
 using PhrasebookBackendService.Exceptions;
 using PhrasebookBackendService.Validation;
+using System;
 using System.Threading.Tasks;
 
 namespace PhrasebookBackendService.Controllers
@@ -46,7 +48,7 @@ namespace PhrasebookBackendService.Controllers
                 this.AuthenticatedUser.PrincipalId,
                 requestData.FirstLanguagePhrase,
                 requestData.ForeignLanguagePhrase,
-                (Phrasebook.Data.Models.LexicalItemType)requestData.LexicalItemType,
+                Enum.Parse<Phrasebook.Data.Models.LexicalItemType>(requestData.LexicalItemType, true),
                 requestData.ForeignLanguageSynonyms,
                 requestData.Description);
 
@@ -68,15 +70,20 @@ namespace PhrasebookBackendService.Controllers
                 return this.BadRequest(ex.Message);
             }
 
-            // Validation passed: update phrase
+            // Validation passed: update phrase 
             this.Logger.LogInformation($"Updating phrase with ID {phraseId} in phrasebook with ID {bookId} for user with principal ID '{this.AuthenticatedUser.PrincipalId}'");
+            Phrasebook.Data.Models.LexicalItemType? updatedLexicalItemType = null;
+            if (Enum.TryParse(requestData.LexicalItemType, true, out Phrasebook.Data.Models.LexicalItemType lexicalItemType))
+            {
+                updatedLexicalItemType = lexicalItemType;
+            }
             Phrasebook.Data.Models.Phrase updatedPhrase = await this.UnitOfWork.PhraseRepository.UpdatePhraseAsync(
                 bookId,
                 phraseId,
                 this.AuthenticatedUser.PrincipalId,
                 requestData.FirstLanguagePhrase,
                 requestData.ForeignLanguagePhrase,
-                (Phrasebook.Data.Models.LexicalItemType?)requestData.LexicalItemType,
+                updatedLexicalItemType,
                 requestData.ForeignLanguageSynonyms,
                 requestData.Description);
             return this.Ok(updatedPhrase.ToPhraseDto());
@@ -93,6 +100,13 @@ namespace PhrasebookBackendService.Controllers
 
             await this.UnitOfWork.PhraseRepository.DeletePhraseAsync(bookId, phraseId, this.AuthenticatedUser.PrincipalId);
             return this.Ok();
+        }
+
+        [HttpGet("phrasetypes")]
+        public IActionResult GetLexicalItemTypes()
+        {
+            ListResult<string> lexicalItemTypes = Enum.GetNames(typeof(Phrasebook.Data.Models.LexicalItemType)).ToListResult();
+            return this.Ok(lexicalItemTypes);
         }
     }
 }
