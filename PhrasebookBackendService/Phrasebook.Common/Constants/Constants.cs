@@ -1,4 +1,7 @@
-﻿namespace Phrasebook.Common.Constants
+﻿using System;
+using System.IO;
+
+namespace Phrasebook.Common.Constants
 {
     public static partial class Constants
     {
@@ -56,7 +59,7 @@
 
         #endregion
 
-        public const string SupportedLanguagesFilePath = @"Languages\supportedLanguages.json";
+        public static readonly string SupportedLanguagesFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Languages", "supportedLanguages.json");
 
         private const string AppSettingsJsonFormat = "appsettings.{0}.json";
 

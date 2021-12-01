@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.IO;
 
 namespace Phrasebook.Common.Languages
@@ -12,7 +11,7 @@ namespace Phrasebook.Common.Languages
 
         private static SupportedLanguage[] GetSupportedLanguagesFromJsonFile()
         {
-            string supportedLanguagesJson = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Constants.Constants.SupportedLanguagesFilePath));
+            string supportedLanguagesJson = File.ReadAllText(Constants.Constants.SupportedLanguagesFilePath);
             return JsonConvert.DeserializeObject<SupportedLanguage[]>(supportedLanguagesJson);
         }
     }
