@@ -68,12 +68,7 @@ namespace PhrasebookBackendService.Controllers
             }
 
             // Validation passed: create new phrasebook
-            this.Logger.LogInformation(string.Join(Environment.NewLine, new string[]
-            {
-                $"Creating phrasebook for user with principal ID '{this.AuthenticatedUser.PrincipalId}' with the following request data:",
-                $"First language code: {requestData.FirstLanguageCode}",
-                $"Foreign language code: {requestData.ForeignLanguageCode}"
-            }));
+            this.Logger.LogInformation($"Creating phrasebook for user with principal ID '{this.AuthenticatedUser.PrincipalId}' with the following request data:{Environment.NewLine}{requestData}");
             Phrasebook.Data.Models.User user = await this.UnitOfWork.UserRepository.GetUserByPrincipalIdAsync(this.AuthenticatedUser.PrincipalId);
             Phrasebook.Data.Models.Language firstLanguage = await this.UnitOfWork.LanguageRepository.GetLanguageByCodeAsync(requestData.FirstLanguageCode);
             Phrasebook.Data.Models.Language foreignLanguage = await this.UnitOfWork.LanguageRepository.GetLanguageByCodeAsync(requestData.ForeignLanguageCode);

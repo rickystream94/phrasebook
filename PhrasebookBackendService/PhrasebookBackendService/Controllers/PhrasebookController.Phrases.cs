@@ -30,6 +30,7 @@ namespace PhrasebookBackendService.Controllers
         public async Task<IActionResult> CreatePhraseAsync([FromRoute] int bookId, [FromBody] CreateOrUpdatePhraseRequestData requestData)
         {
             // Validate input
+            requestData?.SanitizeAll();
             IGenericValidator validator = this.ValidatorFactory.CreateOrUpdatePhraseValidator(this.AuthenticatedUser.PrincipalId, requestData, bookId);
             try
             {
@@ -59,6 +60,7 @@ namespace PhrasebookBackendService.Controllers
         public async Task<IActionResult> UpdatePhraseAsync([FromRoute] int bookId, [FromRoute] int phraseId, [FromBody] CreateOrUpdatePhraseRequestData requestData)
         {
             // Validate input
+            requestData?.SanitizeAll();
             IGenericValidator validator = this.ValidatorFactory.CreateOrUpdatePhraseValidator(this.AuthenticatedUser.PrincipalId, requestData, bookId, phraseId);
             try
             {

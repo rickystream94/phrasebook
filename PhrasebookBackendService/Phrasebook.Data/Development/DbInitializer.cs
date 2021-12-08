@@ -35,7 +35,7 @@ namespace Phrasebook.Data.Development
             // Add phrasebooks
             Book it_en = await unitOfWork.BookRepository.CreateNewPhrasebookAsync(languagesByCode["it"], languagesByCode["en"], developmentUser);
             Book it_es = await unitOfWork.BookRepository.CreateNewPhrasebookAsync(languagesByCode["it"], languagesByCode["es"], developmentUser);
-            Book en_dk = await unitOfWork.BookRepository.CreateNewPhrasebookAsync(languagesByCode["en"], languagesByCode["dk"], developmentUser);
+            Book en_dk = await unitOfWork.BookRepository.CreateNewPhrasebookAsync(languagesByCode["en"], languagesByCode["da"], developmentUser);
             Book it_fr = await unitOfWork.BookRepository.CreateNewPhrasebookAsync(languagesByCode["it"], languagesByCode["fr"], developmentUser);
 
             // Add phrases
